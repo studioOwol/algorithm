@@ -1,7 +1,7 @@
 function solution(s) {
-    const numbers = s.split(' ').map(Number);
-    const minNum = String(Math.min(...numbers));
-    const maxNum = String(Math.max(...numbers));
+    const numbers = s.split(' ');
+    const minNum = Math.min(...numbers);
+    const maxNum = Math.max(...numbers);
     
     return minNum + ' ' + maxNum;
 }
