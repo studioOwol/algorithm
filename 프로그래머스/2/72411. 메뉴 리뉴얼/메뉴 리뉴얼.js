@@ -1,64 +1,64 @@
+
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
 function solution(orders, course) {
-    let result = [];
-  
-    course.forEach(count => {
-        const menuMap = new Map();
-        const combiArr = [];
-        let maxCount = 0;
-        
-        orders.forEach(order => {
-            combiArr.push(...combinations(order, count, 0, ''));
-        });
-        
-        countCombiMenus(combiArr, menuMap);
-        findMaxCombi(menuMap, result);
-    })
-    
-    return result.sort();
-}
+  const ordered = {};
+  const candidates = {};
+  const maxNum = Array(10 + 1).fill(0);
+  const createSet = (arr, start, len, foods) => {
+    if (len === 0) {
+      ordered[foods] = (ordered[foods] || 0) + 1;
+      if (ordered[foods] > 1) candidates[foods] = ordered[foods];
+      maxNum[foods.length] = Math.max(maxNum[foods.length], ordered[foods]);
+      return;
+    }
 
-function findMaxCombi(menuMap, result) {
-    let maxCount = 0;
-    let maxCombis = [];
-    
-    menuMap.forEach((count, combi) => {
-        if (count >= 2 && count >= maxCount) {
-            if (count > maxCount) {
-                maxCombis.length = 0;
-            }
-            
-            maxCombis.push(combi);
-            maxCount = count;
-        }
+    for (let i = start; i < arr.length; i++) {
+      createSet(arr, i + 1, len - 1, foods + arr[i]);
+    }
+  };
+
+  orders.forEach((od) => {
+    const sorted = od.split('').sort();
+    course.forEach((len) => {
+      createSet(sorted, 0, len, '');
     });
-    
-    result.push(...maxCombis);
-}
+  });
 
-function countCombiMenus(arr, menuMap) {
-    for (const combi of arr) {
-        if (menuMap.has(combi)) {
-            menuMap.set(combi, menuMap.get(combi) + 1);
-        } else {
-            menuMap.set(combi, 1);
-        }
-    }
-    
-    return menuMap;
-}
+  const launched = Object.keys(candidates).filter(
+    (food) => maxNum[food.length] === candidates[food]
+  );
 
-function combinations(str, length, start = 0, current = '') {
-    const combis = [];
-    
-    if (length === 0) {
-        combis.push(current.split('').sort().join(''));
-        return combis;
-    }
-    
-    for (let i = start; i < str.length; i++) {
-        const newCurrent = current + str[i];
-        combis.push(...combinations(str, length -1, i + 1, newCurrent));
-    }
-    
-    return combis;
+  return launched.sort();
 }
