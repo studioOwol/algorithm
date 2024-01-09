@@ -23,9 +23,6 @@ function solution(friends, gifts) {
         giftIndex[taker]--;
     })
     
-    console.log(giftRecords)
-    console.log(giftIndex)
-    
     friends.forEach(giver => {
         let cnt = 0;
         let giverIndex = giftIndex[giver];
