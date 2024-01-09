@@ -19,8 +19,8 @@ function solution(friends, gifts) {
         
         giftRecords[giver][taker] += 1;
         
-        giftIndex[giver] = (giftIndex[giver] || 0) + 1;
-        giftIndex[taker] = (giftIndex[taker] || 0) - 1;
+        giftIndex[giver]++;
+        giftIndex[taker]--;
     })
     
     console.log(giftRecords)
