@@ -44,7 +44,7 @@ function countCombiMenus(arr, menuMap) {
         }
     }
     
-    return menuMap
+    return menuMap;
 }
 
 function combinations(str, length, start = 0, current = '') {
