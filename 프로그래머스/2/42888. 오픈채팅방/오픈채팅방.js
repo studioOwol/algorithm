@@ -5,13 +5,10 @@ function solution(record) {
     record.forEach(str => {
         const [status, id, name] = str.split(' ');
         
-        if (status === 'Enter') {
+        if (status === 'Enter' || status === 'Change') {
             log[id] = name;
         }
         
-        if (status === 'Change') {
-            log[id] = name;
-        }
     });
     
     record.forEach(str => {
