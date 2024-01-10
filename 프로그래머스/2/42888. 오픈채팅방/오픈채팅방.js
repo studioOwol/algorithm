@@ -1,27 +1,24 @@
 function solution(record) {
-    let log = {};
-    let result = [];
-    
-    record.forEach(str => {
-        const [status, id, name] = str.split(' ');
-        
-        if (status === 'Enter' || status === 'Change') {
-            log[id] = name;
+    const userInfo = {};
+    const action = [];
+    const stateMapping = {
+        'Enter': '님이 들어왔습니다.',
+        'Leave': '님이 나갔습니다.'
+    }
+
+    record.forEach((v) => {
+        const [state, id, nick] = v.split(' ');
+
+        if(state !== "Change") {
+            action.push([state, id]);
         }
-        
-    });
-    
-    record.forEach(str => {
-        const [status, id, name] = str.split(' ');
-        
-        if (status === 'Enter') {
-            result.push(`${log[id]}님이 들어왔습니다.`);
+
+        if(nick) {
+            userInfo[id] = nick;
         }
-        
-        if (status === 'Leave') {
-            result.push(`${log[id]}님이 나갔습니다.`);
-        }
-    });
-    
-    return result;
+    })
+
+    return action.map(([state, uid]) => {
+        return `${userInfo[uid]}${stateMapping[state]}`;    
+    })
 }
