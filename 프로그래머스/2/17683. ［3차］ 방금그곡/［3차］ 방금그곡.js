@@ -25,5 +25,5 @@ function solution(m, musicinfos) {
 }
 
 function convertMelody(m) {
-   return m.replace(/C#/g, 'c').replace(/D#/g, 'd').replace(/A#/g, 'a').replace(/F#/g, 'f').replace(/G#/g, 'g');
+   return m.replaceAll('C#', 'c').replaceAll('D#', 'd').replaceAll('A#', 'a').replaceAll('F#', 'f').replaceAll('G#', 'g');
 }
