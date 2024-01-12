@@ -10,7 +10,7 @@ function solution(n, k) {
     
     while(n !== 0) {
         fact = factorial(n - 1);
-        answer.push(people.splice(Math.floor((k -1) / fact), 1)[0]);
+        answer.push(people.splice(Math.floor((k - 1) / fact), 1)[0]);
         n--;
         k %= fact;
     }
