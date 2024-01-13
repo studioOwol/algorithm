@@ -2,6 +2,8 @@ function solution(s)
 {
     let stack = [];
     
+    if (s.length % 2 !== 0) return 0;
+    
     for (let i = 0; i < s.length; i++) {
         if (stack.length === 0) {
             stack.push(s[i]);
