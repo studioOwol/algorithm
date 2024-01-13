@@ -2,15 +2,13 @@ function solution(s)
 {
     let stack = [];
     
-    for (let str of s) {
+    for (let i = 0; i < s.length; i++) {
         if (stack.length === 0) {
-            stack.push(str);
+            stack.push(s[i]);
+        } else if (stack[stack.length - 1] === s[i]) {
+            stack.pop();
         } else {
-            if (stack[stack.length - 1] !== str) {
-                stack.push(str);
-            } else {
-                stack.pop();
-            }
+            stack.push(s[i]);
         }
     }
     
