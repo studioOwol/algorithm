@@ -1,18 +1,12 @@
 function solution(s)
-{
-    let stack = [];
+{   
+    const result = [];
     
-    if (s.length % 2 !== 0) return 0;
-    
-    for (let i = 0; i < s.length; i++) {
-        if (stack.length === 0) {
-            stack.push(s[i]);
-        } else if (stack[stack.length - 1] === s[i]) {
-            stack.pop();
-        } else {
-            stack.push(s[i]);
-        }
+    for (let chr of s) {
+        if (result.length === 0) result.push(chr);
+        else if (result[result.length-1] === chr) result.pop();
+        else result.push(chr);
     }
     
-    return stack.length === 0 ? 1 : 0;
+    return result.length == 0 ? 1 : 0
 }
