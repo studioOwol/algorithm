@@ -1,20 +1,18 @@
 function solution(numbers, target) {
-    const dfs = (cnt, nums, target) => {
-        let result = 0;
+    let answer = 0;
         
-        if (cnt === nums.length) {
-            if (nums.reduce((acc, value) => acc + value, 0) === target) {
-                return 1;
-            } else {
-                return 0;
-            }
+    const getAnswer = (cnt, num) => {
+        if (cnt < numbers.length) {
+            getAnswer(cnt + 1, num + numbers[cnt]);
+            getAnswer(cnt + 1, num - numbers[cnt]);
         } else {
-            result += dfs(cnt + 1, nums, target);
-            nums[cnt] *= -1;
-            result += dfs(cnt + 1, nums, target);
-            return result;
+            if (num === target) {
+                answer++;
+            }
         }
     }
     
-    return dfs(0, numbers, target);
+    getAnswer(0, 0);
+
+    return answer;
 }
