@@ -4,6 +4,10 @@ function solution(k, dungeons) {
     
     const dfs = (cnt, k) => {
         result = Math.max(cnt, result);
+        
+        if (cnt === dungeons.length) {
+            return;
+        }
    
         for (let i = 0; i < dungeons.length; i++) {
            if (k >= dungeons[i][0] && !visited[i]) {
