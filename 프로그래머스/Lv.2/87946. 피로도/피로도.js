@@ -1,30 +1,24 @@
 function solution(k, dungeons) {
     let visited = Array.from({length: dungeons.length}).fill(false);
-    let result = [];
+    let result = 0;
     
-    const dfs = (cnt, depth, k, dungeons, visited) => {
-        if (depth === dungeons.length) {
-            result.push(cnt);
+    const dfs = (cnt, k) => {
+        result = Math.max(cnt, result);
+        
+        if (result === dungeons.length) {
             return;
         }
         
         for (let i = 0; i < dungeons.length; i++) {
-            
-            if (visited[i] === false) {
-                visited[i] = true;
-                if (k >= dungeons[i][0]) {
-                    dfs(cnt+1, depth+1, k-dungeons[i][1], dungeons, visited);
-                }
-                else {
-                    dfs(cnt, depth+1, k, dungeons, visited);
-                }
-                visited[i] = false;
-            }
-            
+           if (k >= dungeons[i][0] && !visited[i]) {
+               visited[i] = true;
+               dfs(cnt + 1, k - dungeons[i][1]);
+               visited[i] = false;
+           }
         }
     }
     
-    dfs (0, 0, k, dungeons, visited);
+    dfs (0, k);
     
-    return Math.max(...result);
+    return result;
 }
