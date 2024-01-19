@@ -1,12 +1,7 @@
 function solution(maps) {
     let queue = [[0, 0, 1]];
     let directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-    const visited = [];
-
-    for (let i = 0; i < maps.length; i++) {
-        const row = Array(maps[0].length).fill(false);
-        visited.push(row);
-    }
+    const visited = Array.from({ length: maps.length }, () => Array(maps[0].length).fill(false));
     
     visited[0][0] = true;
     
