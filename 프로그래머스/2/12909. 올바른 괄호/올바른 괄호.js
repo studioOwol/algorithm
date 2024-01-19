@@ -1,21 +1,10 @@
 function solution(s){
-    if (s.length % 2 !== 0) {
-        return false;
-    }
-    
-    let cnt = 0;
-    
-    for (let i = 0; i < s.length; i++){
-        if (s[i] === '(') {
-            cnt++;
-        } else {
-            if (cnt === 0) {
-                return false;
-            } else {
-                cnt--;
-            }
+    let cum = 0
+    for (let paren of s) {
+        cum += paren === '('? 1: -1
+        if(cum < 0) {
+            return false
         }
     }
-        
-    return cnt === 0;
+    return cum === 0? true: false;
 }
