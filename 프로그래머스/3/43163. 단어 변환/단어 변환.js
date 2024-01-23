@@ -1,6 +1,5 @@
 function solution(begin, target, words) {
-    if (!words.includes(target)) return 0;
-    let visited = Array.from({length: words.length}, () => false);
+    let visited = Array(words.length).fill(false);
     let queue = [[begin, 0]];
     
     function bfs() {
@@ -11,11 +10,7 @@ function solution(begin, target, words) {
                 return cnt;
             }
             
-            for(let i = 0; i < words.length; i++) {
-                if (visited[i]) {
-                    continue;
-                }
-                
+            for (let i = 0; i < words.length; i++) {
                 let tmpWord = words[i];
                 let tmpCnt = 0;
                 
@@ -31,6 +26,8 @@ function solution(begin, target, words) {
                 }
             }
         }
+        
+        return 0;
     }
     
     return bfs();
