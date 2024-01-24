@@ -1,29 +1,23 @@
 function solution(n, computers) {
     let visited = Array(n).fill(false);
-    let answer = 0;
+    let cnt = 0;
     
-    for (let i = 0; i < n; i ++) {
+    for (let i = 0; i < n; i++) {
         if (!visited[i]) {
-            bfs(i);
-            answer++;
+            dfs(i);
+            cnt++;
         }
     }
     
-    function bfs(node) {
-        let queue = [];
-        queue.push(computers[node]);
+    function dfs(node) {
+        visited[node] = true;
         
-        while (queue.length) {
-            let computer = queue.shift();
-            
-            for (let i = 0; i < n; i++) {
-                if (computer[i] === 1 && !visited[i]) {
-                    visited[i] = true;
-                    queue.push(computers[i]);
-                }
+        for (let i = 0; i < n; i++) {
+            if (computers[node][i] === 1 && !visited[i]) {
+                dfs(i);
             }
         }
     }
     
-    return answer;
+    return cnt;
 }
