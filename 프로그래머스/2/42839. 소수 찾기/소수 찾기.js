@@ -1,12 +1,12 @@
 function solution(numbers) {
     const nums = numbers.split('');
-    const set = [];
+    const set = new Set();
     
     const getCombinations = (arr, selected) => {
         if (selected.length > 0) {
             const number = Number(selected.join(''));
-            if (isPrime(number) && !set.includes(number)) {
-                set.push(number);
+            if (isPrime(number) && !set.has(number)) {
+                set.add(number);
             }
         }
         
@@ -29,6 +29,6 @@ function solution(numbers) {
     
     getCombinations(nums, []);
     
-    return set.length;
+    return set.size;
 }
 
