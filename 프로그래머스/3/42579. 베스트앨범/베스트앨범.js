@@ -6,8 +6,6 @@ function solution(genres, plays) {
         genreCnt[genre] = (genreCnt[genre] || 0) + plays[idx];
         songCnt[genre] = [...(songCnt[genre] || []), { index: idx, plays: plays[idx] }];
     });
-    
-    console.log(songCnt)
 
     const genreOrder = Object.keys(genreCnt).sort((a, b) => genreCnt[b] - genreCnt[a]);
 
