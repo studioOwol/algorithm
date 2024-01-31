@@ -9,13 +9,12 @@ function solution(genres, plays) {
 
     const genreOrder = Object.keys(genreCnt).sort((a, b) => genreCnt[b] - genreCnt[a]);
 
-    const sortedSong = {};
+    const result = [];
     
-    for (const genre in songCnt) {
-        sortedSong[genre] = songCnt[genre].sort((a, b) => b.plays - a.plays).slice(0, 2);
+    for (const genre of genreOrder) {
+        const sortedSongs = songCnt[genre].sort((a, b) => b.plays - a.plays);
+        result.push(...sortedSongs.slice(0, 2).map(song => song.index));
     }
-    
-    const answer = genreOrder.reduce((answer, genre) => answer.concat(sortedSong[genre].map(item => item.index)), []);
-    
-    return answer;
+
+    return result;
 }
