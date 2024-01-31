@@ -10,7 +10,7 @@ function solution(n, lost, reserve) {
                 answer.push(lostNum);
                 newReserve.splice(idx, 1);
             }
-        })
+        });
     });
     
     return n - newLost.length + answer.length;
