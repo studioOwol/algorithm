@@ -4,7 +4,7 @@ function solution(number, k) {
     for (let i = 0; i < number.length; i++) {
         const num = number[i];
         
-        while (k > 0 && stack.length > 0 && stack[stack.length - 1] < num) {
+        while (k > 0 && stack[stack.length - 1] < num) {
             stack.pop();
             k--;
         }
@@ -12,7 +12,5 @@ function solution(number, k) {
         stack.push(num);
     }
     
-    stack.splice(stack.length - k, k);
-    
-    return stack.join('');
+    return stack.join('').slice(0, stack.length - k);
 }
