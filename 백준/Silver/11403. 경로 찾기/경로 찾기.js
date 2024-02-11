@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 let [cnt, ...inputs] = require('fs')
-  .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
+  .readFileSync('/dev/stdin')
   .toString()
   .trim()
   .split('\n')
