@@ -1,23 +1,23 @@
 const fs = require('fs');
+let input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
 
-let [cnt, ...inputs] = require('fs')
-  .readFileSync('/dev/stdin')
-  .toString()
-  .trim()
-  .split('\n')
-  .map((el) => el.split(' ').map(Number));
+let cnt = Number(input[0]);
+let list = input.slice(1).map((e) => {
+  return e.split(' ').map(Number);
+});
 
-// i = 거쳐가는 점
 for (let i = 0; i < cnt; i++) {
-  // j = 시작점
   for (let j = 0; j < cnt; j++) {
-    // k = 끝점
     for (let k = 0; k < cnt; k++) {
-      if (inputs[j][i] === 1 && inputs[i][k] === 1) {
-        inputs[j][k] = 1;
-      }
+      if (list[j][i] && list[i][k]) list[j][k] = 1;
     }
   }
 }
 
-console.log(inputs.map((value) => value.join(' ')).join('\n'));
+console.log(
+  list
+    .map((e) => {
+      return e.join(' ');
+    })
+    .join('\n')
+);
