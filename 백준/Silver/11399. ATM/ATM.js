@@ -9,11 +9,10 @@ let [n, line] = require('fs')
 
 line.sort((a, b) => a - b);
 let sum = 0;
-let answer = 0;
 
-line.forEach((num) => {
+let answer = line.reduce((acc, num) => {
   sum += num;
-  answer += sum;
-});
+  return acc + sum;
+}, 0);
 
 console.log(answer);
