@@ -8,11 +8,12 @@ let [n, line] = require('fs')
   .map((el) => el.split(' ').map(Number));
 
 line.sort((a, b) => a - b);
-let answer = [];
+let sum = 0;
+let answer = 0;
 
-for (let i = 1; i <= n; i++) {
-  let prevSum = line.slice(0, i).reduce((acc, value) => acc + value, 0);
-  answer.push(prevSum);
-}
+line.forEach((num) => {
+  sum += num;
+  answer += sum;
+});
 
-console.log(answer.reduce((acc, value) => acc + value, 0));
+console.log(answer);
