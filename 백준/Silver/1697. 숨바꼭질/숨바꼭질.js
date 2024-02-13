@@ -1,45 +1,28 @@
 const fs = require('fs');
 
-const input = require('fs')
+let [n, k] = require('fs')
   .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
   .toString()
   .trim()
   .split(' ')
   .map(Number);
 
-let [n, k] = input;
-let visited = Array(100001).fill(false);
-let queue = [[n, 0]];
+const jump = (n, k) => {
+  if (k <= n) {
+    return n - k;
+  }
 
-const bfs = () => {
-  while (queue.length) {
-    let [n, cnt] = queue.shift();
+  if (k === 1) {
+    return 1;
+  }
 
-    if (n === k) {
-      return cnt;
-    }
+  if (k % 2 === 1) {
+    return 1 + Math.min(jump(n, k - 1), jump(n, k + 1));
+  }
 
-    if (0 <= n + 1 && n + 1 <= 100000) {
-      if (!visited[n + 1]) {
-        visited[n + 1] = true;
-        queue.push([n + 1, cnt + 1]);
-      }
-    }
-
-    if (0 <= n - 1 && n - 1 <= 100000) {
-      if (!visited[n - 1]) {
-        visited[n - 1] = true;
-        queue.push([n - 1, cnt + 1]);
-      }
-    }
-
-    if (0 <= n * 2 && n * 2 <= 100000) {
-      if (!visited[n * 2]) {
-        visited[n * 2] = true;
-        queue.push([n * 2, cnt + 1]);
-      }
-    }
+  if (k % 2 === 0) {
+    return Math.min(k - n, 1 + jump(n, k / 2));
   }
 };
 
-console.log(bfs());
+console.log(jump(n, k));
