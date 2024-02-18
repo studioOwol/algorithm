@@ -1,47 +1,51 @@
-const input = require("fs")
-  .readFileSync("/dev/stdin")
+const fs = require('fs');
+
+const input = require('fs')
+  .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
   .toString()
   .trim()
-  .split("\n");
+  .split('\n');
 
-const N = Number(input.shift());
-
-const map = input.map((row) => row.split("").map(Number));
-const visited = Array.from(Array(N), () => Array(N).fill(false));
-
-//상하좌우
-const dx = [0, 0, -1, 1];
-const dy = [-1, 1, 0, 0];
-
-let count_home = 0;
-let count_complex = 0;
-const answer = [];
+let n = Number(input.shift());
+let maps = input.map((row) => row.split('').map(Number));
+let visited = Array.from({ length: n }, () => Array(n).fill(false));
+let directions = [
+  [1, 0],
+  [-1, 0],
+  [0, 1],
+  [0, -1],
+];
+let complex = 0;
+let cnt = 0;
+let answer = [];
 
 const dfs = (x, y) => {
-  if (map[x][y] === 1 && visited[x][y] === false) {
-    visited[x][y] = true;
-    count_home++;
+  if (maps[y][x] === 1 && !visited[y][x]) {
+    visited[y][x] = true;
+    cnt++;
 
-    for (let i = 0; i < 4; i++) {
-      const [newX, newY] = [x + dx[i], y + dy[i]];
-      if (newX >= 0 && newX < N && newY >= 0 && newY < N) {
-        dfs(newX, newY);
+    for (let direction of directions) {
+      let nx = x + direction[0];
+      let ny = y + direction[1];
+
+      if (0 <= nx && nx < n && 0 <= ny && ny < n) {
+        dfs(nx, ny);
       }
     }
   }
 };
 
-for (let i = 0; i < N; i++) {
-  for (let j = 0; j < N; j++) {
-    if (map[i][j] === 1 && visited[i][j] === false) {
-      dfs(i, j);
-      count_complex++;
-      answer.push(count_home);
-      count_home = 0;
+for (let y = 0; y < n; y++) {
+  for (let x = 0; x < n; x++) {
+    if (maps[y][x] === 1 && !visited[y][x]) {
+      dfs(x, y);
+      complex++;
+      answer.push(cnt);
+      cnt = 0;
     }
   }
 }
 
-console.log(
-  count_complex + "\n" + `${answer.sort((a, b) => a - b).join("\n")}`
-);
+answer.sort((a, b) => a - b);
+
+console.log(complex + '\n' + `${answer.join('\n')}`);
