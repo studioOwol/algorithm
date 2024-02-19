@@ -17,11 +17,14 @@ for (let i = 0; i < n; i++) {
 }
 
 for (let i = n; i < n + m; i++) {
+  let tmp;
+
   if (isNaN(input[i])) {
-    answer += map.get(input[i]) + '\n';
+    tmp = map.get(input[i]);
   } else {
-    answer += names[input[i] - 1] + '\n';
+    tmp = names[input[i] - 1];
   }
+  answer += tmp + '\n';
 }
 
 console.log(answer);
