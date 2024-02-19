@@ -7,20 +7,16 @@ const input = require('fs')
   .split('\n');
 
 let [n, m] = input.shift().split(' ').map(Number);
-let map = {};
+let map = new Map();
 let answer = '';
 
 for (let i = 0; i < n; i++) {
   let [address, password] = input[i].split(' ');
-  if (!map[address]) {
-    map[address] = '';
-  }
-
-  map[address] = password;
+  map.set(address, password);
 }
 
 for (let i = n; i < n + m; i++) {
-  answer += map[input[i]] + '\n';
+  answer += map.get(input[i]) + '\n';
 }
 
 console.log(answer);
