@@ -33,7 +33,7 @@ for (let i = 0; i < n; i++) {
 
 const bfs = () => {
   while (queue.length) {
-    let [x, y] = queue.shift();
+    let [x, y] = queue.pop();
 
     for (let d of ds) {
       let nx = x + d[0];
