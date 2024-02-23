@@ -10,24 +10,32 @@ let graph = Array.from({ length: n + 1 }, () => []);
 let visited = Array(n + 1).fill(0);
 let cnt = 0;
 
-for (let [start, end] of inputs) {
+for (let i = 0; i < m; i++) {
+  let [start, end] = inputs[i];
+
   graph[start].push(end);
   graph[end].push(start);
 }
 
-const dfs = (start) => {
+const bfs = (start) => {
+  let queue = [start];
   visited[start] = true;
 
-  for (let node of graph[start]) {
-    if (!visited[node]) {
-      dfs(node);
+  while (queue.length) {
+    let node = queue.shift();
+
+    for (let next of graph[node]) {
+      if (!visited[next]) {
+        visited[next] = true;
+        queue.push(next);
+      }
     }
   }
 };
 
 for (let i = 1; i < n + 1; i++) {
   if (!visited[i]) {
-    dfs(i);
+    bfs(i);
     cnt++;
   }
 }
