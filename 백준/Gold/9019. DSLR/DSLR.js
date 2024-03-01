@@ -5,7 +5,6 @@ let [t, ...inputs] = require('fs')
   .split('\n');
 
 let answer = [];
-let numbers = inputs.map((el) => el.split(' ').map(Number));
 
 const bfs = (a, b) => {
   let visited = Array(10000).fill(false);
@@ -47,9 +46,9 @@ const bfs = (a, b) => {
   }
 };
 
-for (let i = 0; i < Number(t); i++) {
-  let [a, b] = numbers[i];
+inputs.forEach((input) => {
+  let [a, b] = input.split(' ').map(Number);
   bfs(a, b);
-}
+});
 
 console.log(answer.join('\n'));
