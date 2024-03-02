@@ -5,16 +5,23 @@ let [n, r, c] = require('fs')
   .split(' ')
   .map(Number);
 
-const recursion = (n, r, c) => {
-  if (n === 0) {
-    return 0;
+let answer = 0;
+
+const recursion = (row, col, size) => {
+  if (row === r && col === c) {
+    console.log(answer);
+    return;
   }
 
-  return (
-    2 * (r % 2) +
-    (c % 2) +
-    4 * recursion(n - 1, Math.floor(r / 2), Math.floor(c / 2))
-  );
+  if (row <= r && r < row + size && col <= c && c < col + size) {
+    size = Math.floor(size / 2);
+    recursion(row, col, size);
+    recursion(row, col + size, size);
+    recursion(row + size, col, size);
+    recursion(row + size, col + size, size);
+  } else {
+    answer += size * size;
+  }
 };
 
-console.log(recursion(n, r, c));
+recursion(0, 0, Math.pow(2, n));
