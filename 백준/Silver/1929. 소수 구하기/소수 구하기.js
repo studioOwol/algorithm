@@ -6,19 +6,17 @@ let [m, n] = require('fs')
   .map(Number);
 
 let answer = [];
+let isPrime = Array(n + 1).fill(true);
+isPrime[1] = false;
 
-const isPrime = (num) => {
-  if (num < 2) return false;
-
-  for (let i = 2; i <= Math.sqrt(num); i++) {
-    if (num % i === 0) return false;
+for (let i = 2; i <= Math.ceil(Math.sqrt(n)); i++) {
+  for (let j = i * i; j <= n; j += i) {
+    isPrime[j] = false;
   }
-
-  return true;
-};
+}
 
 for (let i = m; i <= n; i++) {
-  if (isPrime(i)) {
+  if (isPrime[i]) {
     answer.push(i);
   }
 }
