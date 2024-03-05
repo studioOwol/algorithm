@@ -6,25 +6,19 @@ let input = require('fs')
 
 let [n, m] = input[0].split(' ').map(Number);
 let numbers = input[1].split(' ').map(Number);
+let sum = 0;
 let max = 0;
 
-const recurstion = (arr, size, start, combi) => {
-  if (combi.length === size) {
-    let sum = combi.reduce((acc, num) => acc + num, 0);
+for (let i = 0; i < n; i++) {
+  for (let j = i + 1; j < n; j++) {
+    for (let k = j + 1; k < n; k++) {
+      sum = numbers[i] + numbers[j] + numbers[k];
 
-    if (max < sum && sum <= m) {
-      max = sum;
+      if (sum <= m && max < sum) {
+        max = sum;
+      }
     }
-    return;
   }
-
-  for (let i = start; i < arr.length; i++) {
-    combi.push(arr[i]);
-    recurstion(arr, size, i + 1, combi);
-    combi.pop();
-  }
-};
-
-recurstion(numbers, 3, 0, []);
+}
 
 console.log(max);
