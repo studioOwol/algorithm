@@ -7,16 +7,16 @@ let [n, ...nums] = require('fs')
 
 let stack = [];
 let answer = [];
-let num = 0;
+let num = 1;
 
 for (let i = 0; i < n; i++) {
-  while (num < nums[i]) {
+  while (num <= nums[i]) {
     stack.push(num);
     answer.push('+');
     num++;
   }
 
-  if (stack[stack.length - 1] < nums[i]) {
+  if (stack[stack.length - 1] === nums[i]) {
     stack.pop();
     answer.push('-');
   }
