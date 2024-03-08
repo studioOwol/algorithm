@@ -35,6 +35,6 @@ if (modes.length > 1) {
 }
 
 // 범위
-answer.push(nums[t - 1] - nums[0]);
+answer.push(nums[nums.length - 1] - nums[0]);
 
 console.log(answer.join('\n'));
