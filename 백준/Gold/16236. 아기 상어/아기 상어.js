@@ -74,11 +74,11 @@ const bfs = () => {
   return [minR, minC, minDist];
 };
 
-const recursion = () => {
+for (let i = 0; i < n * n; i++) {
   let [minR, minC, minDist] = bfs();
 
   if (minR === Infinity && minC === Infinity && minDist === Infinity) {
-    return;
+    break;
   }
 
   shark.r = minR;
@@ -92,10 +92,6 @@ const recursion = () => {
   }
 
   space[minR][minC] = 0;
-
-  recursion();
-};
-
-recursion();
+}
 
 console.log(totalTime);
