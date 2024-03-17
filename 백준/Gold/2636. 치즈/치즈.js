@@ -1,5 +1,3 @@
-const { timeEnd } = require('console');
-
 let [t, ...plate] = require('fs')
   .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
   .toString()
@@ -28,29 +26,6 @@ for (let i = 0; i < R; i++) {
   }
 }
 
-const markAir = () => {
-  let queue = [[0, 0]];
-
-  while (queue.length) {
-    let [r, c] = queue.shift();
-
-    for (let d of ds) {
-      let nr = r + d[0];
-      let nc = c + d[1];
-
-      if (!(0 <= nr && nr < R && 0 <= nc && nc < C)) {
-        continue;
-      }
-
-      if (!visited[nr][nc] && plate[nr][nc] === 0) {
-        visited[nr][nc] = true;
-        queue.push([nr, nc]);
-        plate[nr][nc] = 2;
-      }
-    }
-  }
-};
-
 const meltCheese = () => {
   let isMelted = false;
 
@@ -64,7 +39,7 @@ const meltCheese = () => {
       let [r, c] = queue.shift();
 
       if (plate[r][c] === 1) {
-        plate[r][c] = 2;
+        plate[r][c] = 0;
         isMelted = false;
         continue;
       }
@@ -83,21 +58,14 @@ const meltCheese = () => {
         }
       }
     }
-
+    
     if (!isMelted) {
       time++;
       remainings.push(plate.flat().filter((cell) => cell === 1).length);
     }
-
-    if (plate.flat().includes(1)) {
-      isMelted = false;
-    } else {
-      break;
-    }
   }
 };
 
-markAir();
 meltCheese();
 
 console.log(time);
