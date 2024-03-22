@@ -6,6 +6,7 @@ let [t, ...countries] = require('fs')
   .map((el) => el.split(' ').map(Number));
 
 let [N, L, R] = t;
+let visited;
 let ds = [
   [0, 1],
   [1, 0],
@@ -13,70 +14,70 @@ let ds = [
   [-1, 0],
 ];
 let day = 0;
-let visited;
+let totalPeople;
+let borderCnt;
 
-while (true) {
-  visited = Array.from({ length: N }, () => Array(N).fill(false));
+for (let t = 0; t < 2000; t++) {
   let isMoved = false;
+  visited = Array.from({ length: N }, () => Array(N).fill(0));
 
   for (let r = 0; r < N; r++) {
     for (let c = 0; c < N; c++) {
-      if (!visited[r][c]) {
-        let union = checkBorder(r, c);
-        if (union.length > 1) {
-          move(union);
+      if (visited[r][c] === 0) {
+        totalPeople = 0;
+        borderCnt = 0;
+        dfs(r, c);
+
+        if (borderCnt > 1) {
+          move(Math.floor(totalPeople / borderCnt));
           isMoved = true;
+        }
+
+        if (borderCnt === 1) {
+          visited[r][c] = 2;
         }
       }
     }
   }
 
-  if (!isMoved) break;
-  day++;
+  if (isMoved) {
+    day++;
+  } else {
+    break;
+  }
 }
 
 console.log(day);
 
-function move(union) {
-  let totalPopulation = 0;
-
-  for (let [r, c] of union) {
-    totalPopulation += countries[r][c];
-  }
-
-  let avgPopulation = Math.floor(totalPopulation / union.length);
-
-  for (let [r, c] of union) {
-    countries[r][c] = avgPopulation;
-  }
-}
-
-function checkBorder(r, c) {
-  let queue = [[r, c]];
-  let union = [];
-
-  while (queue.length) {
-    let [r, c] = queue.shift();
-    if (visited[r][c]) continue;
-
-    visited[r][c] = true;
-    union.push([r, c]);
-
-    for (let d of ds) {
-      let nr = r + d[0];
-      let nc = c + d[1];
-
-      if (!(0 <= nr && nr < N && 0 <= nc && nc < N)) {
-        continue;
-      }
-
-      let diff = Math.abs(countries[r][c] - countries[nr][nc]);
-
-      if (L <= diff && diff <= R) {
-        queue.push([nr, nc]);
+function move(people) {
+  for (let r = 0; r < N; r++) {
+    for (let c = 0; c < N; c++) {
+      if (visited[r][c] === 1) {
+        visited[r][c] = 2;
+        countries[r][c] = people;
       }
     }
   }
+}
 
-  return union;
+function dfs(r, c) {
+  visited[r][c] = 1;
+  borderCnt++;
+  totalPeople += countries[r][c];
+
+  for (let d of ds) {
+    let nr = r + d[0];
+    let nc = c + d[1];
+
+    if (!(0 <= nr && nr < N && 0 <= nc && nc < N)) {
+      continue;
+    }
+
+    if (!visited[nr][nc]) {
+      let diff = Math.abs(countries[r][c] - countries[nr][nc]);
+      if (L <= diff && diff <= R) {
+        dfs(nr, nc);
+      }
+    }
+  }
 }
