@@ -6,17 +6,20 @@ let [N, M] = require('fs')
   .map(Number);
 
 let answer = [];
+let result = [];
 
 makeSequence(0, 1, N, M);
 
+console.log(answer.join('\n'));
+
 function makeSequence(index, start, n, m) {
   if (index === m) {
-    console.log(answer.join(' '));
+    answer.push(result.join(' '));
     return;
   }
 
   for (let i = start; i <= N; i++) {
-    answer[index] = i;
+    result[index] = i;
     makeSequence(index + 1, i, n, m);
   }
 }
