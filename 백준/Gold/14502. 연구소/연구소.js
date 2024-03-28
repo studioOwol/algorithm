@@ -18,9 +18,8 @@ let result = 0;
 makeWall(0);
 console.log(result);
 
-function bfs() {
+function bfs(temp) {
   let queue = [];
-  let temp = lab.map((row) => row.slice());
 
   for (let r = 0; r < N; r++) {
     for (let c = 0; c < M; c++) {
@@ -63,7 +62,8 @@ function bfs() {
 
 function makeWall(cnt) {
   if (cnt === 3) {
-    let tempResult = bfs();
+    let temp = lab.map((v) => [...v]);
+    let tempResult = bfs(temp);
     result = Math.max(result, tempResult);
     return;
   }
