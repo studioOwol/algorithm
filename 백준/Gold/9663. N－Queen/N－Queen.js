@@ -4,31 +4,25 @@ let N = +require('fs')
   .trim();
 
 let cnt = 0;
-let row = Array(N).fill(0);
 
-dfs(0);
+let col = Array(N + 1).fill(false);
+let diag1 = Array(2 * N + 1).fill(false);
+let diag2 = Array(2 * N + 1).fill(false);
+
+dfs(1);
 
 console.log(cnt);
 
-// r행 c열에 퀸을 둘 수 있는지 판단하는 메서드
-function isValid(r, c) {
-  for (let i = 0; i < r; i++) {
-    if (c === row[i]) return false;
-    if (Math.abs(c - row[i]) === r - i) return false;
-  }
-  return true;
-}
-
-function dfs(r) {
-  if (r === N) {
+function dfs(row) {
+  if (row === N + 1) {
     cnt++;
-    return;
-  }
-
-  for (let i = 0; i < N; i++) {
-    if (isValid(r, i)) {
-      row[r] = i;
-      dfs(r + 1);
+  } else {
+    for (let i = 1; i <= N; i++) {
+      if (!col[i] && !diag1[row + i] && !diag2[row - i + N]) {
+        col[i] = diag1[row + i] = diag2[row - i + N] = true;
+        dfs(row + 1);
+        col[i] = diag1[row + i] = diag2[row - i + N] = false;
+      }
     }
   }
 }
