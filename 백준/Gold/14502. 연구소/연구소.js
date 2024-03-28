@@ -58,12 +58,13 @@ function bfs() {
     }
   }
 
-  result = Math.max(result, cnt);
+  return cnt;
 }
 
 function makeWall(cnt) {
   if (cnt === 3) {
-    bfs();
+    let tempResult = bfs();
+    result = Math.max(result, tempResult);
     return;
   }
 
