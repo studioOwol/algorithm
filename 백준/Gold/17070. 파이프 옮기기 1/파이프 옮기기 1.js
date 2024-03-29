@@ -47,6 +47,7 @@ function dfs(r, c) {
 
   if (r === N - 1 && c === N - 1) {
     count++;
+    return;
   }
 
   let moveWays = ds[pipe.d];
