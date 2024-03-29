@@ -3,28 +3,31 @@ let N = +require('fs')
   .toString()
   .trim();
 
-let board = Array.from({ length: N }, () => Array(N).fill('*'));
+let answer = recursion(N);
 
-const recursion = (r, c, size) => {
-  if (size === 1) {
-    return;
+console.log(answer.join('\n'));
+
+function recursion(size) {
+  // 패턴
+  if (size === 3) {
+    return ['***', '* *', '***'];
   }
 
-  size = Math.floor(size / 3);
+  let prev = recursion(size / 3);
+  let result = [];
 
-  for (let i = r + size; i < r + size * 2; i++) {
-    for (let j = c + size; j < c + size * 2; j++) {
-      board[i][j] = ' ';
-    }
+  for (let line of prev) {
+    result.push(line.repeat(3));
   }
 
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      recursion(r + size * i, c + size * j, size);
-    }
+  // 가운데 빈 공간
+  for (let line of prev) {
+    result.push(line + ' '.repeat(size / 3) + line);
   }
-};
 
-recursion(0, 0, N);
+  for (let line of prev) {
+    result.push(line.repeat(3));
+  }
 
-console.log(board.map((v) => v.join('')).join('\n'));
+  return result;
+}
