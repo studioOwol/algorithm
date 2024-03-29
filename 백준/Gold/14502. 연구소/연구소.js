@@ -5,75 +5,89 @@ let [t, ...inputs] = require('fs')
   .split('\n');
 
 let [N, M] = t.split(' ').map(Number);
-let lab = inputs.map((el) => el.split(' ').map(Number));
-let ds = [
-  [-1, 0],
-  [0, 1],
-  [1, 0],
-  [0, -1],
-];
+let laboratory = inputs.map((el) => el.split(' ').map(Number));
+let virus = [];
+let empty = [];
+let walls = [];
+let result, cnt, lab;
 
-let result = 0;
+for (let r = 0; r < N; r++) {
+  for (let c = 0; c < M; c++) {
+    if (laboratory[r][c] === 2) {
+      virus.push([r, c]);
+    }
 
-dfs(0, 0, 0);
-console.log(result);
-
-function bfs(temp) {
-  let safeZones = 0;
-  let queue = [];
-
-  for (let r = 0; r < N; r++) {
-    for (let c = 0; c < M; c++) {
-      if (temp[r][c] === 2) {
-        queue.push([r, c]);
-      }
+    if (laboratory[r][c] === 0) {
+      empty.push([r, c]);
     }
   }
-
-  while (queue.length) {
-    let [r, c] = queue.shift();
-
-    for (let d of ds) {
-      let nr = r + d[0];
-      let nc = c + d[1];
-
-      if (!(0 <= nr && nr < N && 0 <= nc && nc < M)) {
-        continue;
-      }
-
-      if (temp[nr][nc] === 0) {
-        temp[nr][nc] = 2;
-        queue.push([nr, nc]);
-      }
-    }
-  }
-
-  for (let r = 0; r < N; r++) {
-    for (let c = 0; c < M; c++) {
-      if (temp[r][c] === 0) {
-        safeZones++;
-      }
-    }
-  }
-
-  return safeZones;
 }
 
-function dfs(cnt, r, c) {
-  if (cnt === 3) {
-    let temp = lab.map((row) => [...row]);
-    let tempResult = bfs(temp);
-    result = Math.max(result, tempResult);
+getMinCase();
+console.log(result);
+
+function getMinCase() {
+  if (walls.length === 3) {
+    lab = copyLab();
+
+    walls.forEach((wall) => {
+      let [r, c] = empty[wall];
+      lab[r][c] = 1;
+    });
+
+    let emptyCnt = getEmptyCnt();
+    if (!result || result < emptyCnt) {
+      result = emptyCnt;
+    }
+
     return;
   }
 
-  for (let i = 0; i < N; i++) {
-    for (let j = i === r ? c : 0; j < M; j++) {
-      if (lab[i][j] === 0) {
-        lab[i][j] = 1;
-        dfs(cnt + 1, i, j);
-        lab[i][j] = 0;
-      }
+  for (let i = 0; i < empty.length; i++) {
+    let length = walls.length;
+    if (!walls.includes(i) && (length === 0 || walls[length - 1] < i)) {
+      walls.push(i);
+      getMinCase();
+      walls.pop();
     }
   }
+}
+
+function getEmptyCnt() {
+  cnt = 0;
+
+  virus.forEach((place) => {
+    updateNearPlace(...place);
+  });
+
+  return empty.length - cnt - 3;
+}
+
+function spreadVirus(r, c) {
+  if (!(0 <= r && r < N && 0 <= c && c < M)) {
+    return;
+  }
+
+  if (lab[r][c] === 0) {
+    lab[r][c] = 2;
+    cnt++;
+    updateNearPlace(r, c);
+  }
+}
+
+function updateNearPlace(r, c) {
+  spreadVirus(r + 1, c);
+  spreadVirus(r - 1, c);
+  spreadVirus(r, c + 1);
+  spreadVirus(r, c - 1);
+}
+
+function copyLab() {
+  let temp = [];
+
+  laboratory.forEach((row) => {
+    temp.push([...row]);
+  });
+
+  return temp;
 }
