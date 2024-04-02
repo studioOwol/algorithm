@@ -7,24 +7,24 @@ let input = require('fs')
 let [N, M] = input[0].split(' ').map(Number);
 let nums = input[1].split(' ').map(Number);
 
-let permutes = [];
+let answer = [];
 nums.sort((a, b) => a - b);
 
 getPermutations([]);
 
-console.log(permutes.map((el) => el.join(' ')).join('\n'));
+console.log(answer.map((el) => el.join(' ')).join('\n'));
 
-function getPermutations(permute) {
-  if (permute.length === M) {
-    permutes.push([...permute]);
+function getPermutations(result) {
+  if (result.length === M) {
+    answer.push([...result]);
     return;
   }
 
   for (let i = 0; i < nums.length; i++) {
-    if (!permute.includes(nums[i])) {
-      let newPermute = [...permute];
-      newPermute.push(nums[i]);
-      getPermutations(newPermute);
+    if (!result.includes(nums[i])) {
+      let newResult = [...result];
+      newResult.push(nums[i]);
+      getPermutations(newResult);
     }
   }
 }
