@@ -8,7 +8,8 @@ let [V, E] = ve.split(' ').map(Number);
 let start = +k;
 let linkedInfo = rest.map((el) => el.split(' ').map(Number));
 let graph = Array.from({ length: V + 1 }, () => []);
-let distance = Array(V + 1).fill(Infinity);
+let INF = 2000001;
+let distance = Array(V + 1).fill(INF);
 
 class MinHeap {
   constructor() {
@@ -85,12 +86,19 @@ for (let v of linkedInfo) {
 
 dijkstra(start);
 
-console.log(
-  distance
-    .slice(1)
-    .map((v) => (v === Infinity ? 'INF' : v))
-    .join('\n')
-);
+let answer = '';
+
+for (let i = 1; i <= V; i++) {
+  if (distance[i] === INF) {
+    answer += 'INF';
+  } else {
+    answer += distance[i];
+  }
+
+  answer += '\n';
+}
+
+console.log(answer.trim());
 
 function dijkstra(start) {
   let minHeap = new MinHeap();
@@ -107,8 +115,8 @@ function dijkstra(start) {
       let cost = dist + i[1];
 
       if (cost < distance[node]) {
-        minHeap.push([cost, node]);
         distance[node] = cost;
+        minHeap.push([cost, node]);
       }
     }
   }
