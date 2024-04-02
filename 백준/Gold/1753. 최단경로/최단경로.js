@@ -85,13 +85,12 @@ for (let v of linkedInfo) {
 
 dijkstra(start);
 
-for (let i = 1; i <= V; i++) {
-  if (distance[i] === Infinity) {
-    console.log('INF');
-  } else {
-    console.log(distance[i]);
-  }
-}
+console.log(
+  distance
+    .slice(1)
+    .map((v) => (v === Infinity ? 'INF' : v))
+    .join('\n')
+);
 
 function dijkstra(start) {
   let minHeap = new MinHeap();
