@@ -7,9 +7,8 @@ let [ve, k, ...rest] = require('fs')
 let [V, E] = ve.split(' ').map(Number);
 let start = +k;
 let linkedInfo = rest.map((el) => el.split(' ').map(Number));
-let graph = Array.from({ length: V + 1 }, () => []);
-let INF = 2000001;
-let distance = Array(V + 1).fill(INF);
+let graph = Array.from({ length: V + 1 }, () => new Map());
+let distance = Array(V + 1).fill(Infinity);
 
 class MinHeap {
   constructor() {
@@ -81,15 +80,15 @@ class MinHeap {
 for (let v of linkedInfo) {
   let [a, b, c] = v;
 
-  graph[a].push([b, c]);
+  graph[a].set(b, Math.min(c, graph[a].get(b) || Infinity));
 }
 
-dijkstra(start);
+dijkstra();
 
 let answer = '';
 
 for (let i = 1; i <= V; i++) {
-  if (distance[i] === INF) {
+  if (distance[i] === Infinity) {
     answer += 'INF';
   } else {
     answer += distance[i];
@@ -100,7 +99,7 @@ for (let i = 1; i <= V; i++) {
 
 console.log(answer.trim());
 
-function dijkstra(start) {
+function dijkstra() {
   let minHeap = new MinHeap();
   minHeap.push([0, start]);
   distance[start] = 0;
@@ -110,13 +109,10 @@ function dijkstra(start) {
 
     if (distance[cur] < dist) continue;
 
-    for (let i of graph[cur]) {
-      let node = i[0];
-      let cost = dist + i[1];
-
-      if (cost < distance[node]) {
-        distance[node] = cost;
-        minHeap.push([cost, node]);
+    for (let [next, cost] of graph[cur]) {
+      if (dist + cost < distance[next]) {
+        distance[next] = dist + cost;
+        minHeap.push([dist + cost, next]);
       }
     }
   }
