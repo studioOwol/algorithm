@@ -1,119 +1,144 @@
-let [ve, k, ...rest] = require('fs')
-  .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
-  .toString()
-  .trim()
-  .split('\n');
+const fs = require("fs");
+const input = fs.readFileSync("/dev/stdin").toString().split("\n");
 
-let [V, E] = ve.split(' ').map(Number);
-let start = +k;
-let linkedInfo = rest.map((el) => el.split(' ').map(Number));
-let graph = Array.from({ length: V + 1 }, () => new Map());
-let distance = Array(V + 1).fill(Infinity);
+class Node {
+  constructor(value, priority) {
+    this.value = value;
+    this.priority = priority;
+  }
+}
 
-class MinHeap {
+class PriorityQueue {
   constructor() {
     this.heap = [];
   }
 
-  swap(a, b) {
-    [this.heap[a], this.heap[b]] = [this.heap[b], this.heap[a]];
-  }
+  getParentIndex = (childIndex) => {
+    return Math.floor((childIndex - 1) / 2);
+  };
 
-  push(value) {
-    this.heap.push(value);
-    this.bubbleUp();
-  }
+  getLeftChildIndex = (parentIndex) => {
+    return parentIndex * 2 + 1;
+  };
 
-  bubbleUp() {
+  getRightChildIndex = (parentIndex) => {
+    return parentIndex * 2 + 2;
+  };
+
+  swap = (idx1, idx2) => {
+    [this.heap[idx1], this.heap[idx2]] = [this.heap[idx2], this.heap[idx1]];
+  };
+
+  isEmpty = () => this.heap.length === 0;
+
+  heapifyUp = () => {
     let index = this.heap.length - 1;
-    let parentIdx = Math.floor((index - 1) / 2);
-
-    while (this.heap[parentIdx] && this.heap[index] < this.heap[parentIdx]) {
-      this.swap(index, parentIdx);
-      index = parentIdx;
-      parentIdx = Math.floor((index - 1) / 2);
+    while (index > 0) {
+      let parentIndex = this.getParentIndex(index);
+      if (this.heap[index].priority > this.heap[parentIndex].priority) break;
+      this.swap(index, parentIndex);
+      index = parentIndex;
     }
-  }
+  };
 
-  pop() {
-    if (this.isEmpty()) {
-      return 0;
-    }
-
-    if (this.heap.length === 1) {
-      return this.heap.pop();
-    }
-
-    let minValue = this.heap[0];
-    this.heap[0] = this.heap.pop();
-    this.bubbleDown();
-    return minValue;
-  }
-
-  bubbleDown() {
+  heapifyDown = () => {
     let index = 0;
-    let leftIdx = index * 2 + 1;
-    let rightIdx = index * 2 + 2;
+    while (true) {
+      const leftChildIndex = this.getLeftChildIndex(index);
+      const rightChildIndex = this.getRightChildIndex(index);
+      let swapIdx = null;
 
-    while (
-      (this.heap[leftIdx] && this.heap[leftIdx] < this.heap[index]) ||
-      (this.heap[rightIdx] && this.heap[rightIdx] < this.heap[index])
-    ) {
-      let smallerIdx = leftIdx;
-
-      if (this.heap[rightIdx] && this.heap[rightIdx] < this.heap[smallerIdx]) {
-        smallerIdx = rightIdx;
+      // 왼쪽 자식 노드와 비교
+      if (
+        leftChildIndex < this.heap.length &&
+        this.heap[leftChildIndex].priority < this.heap[index].priority
+      ) {
+        swapIdx = leftChildIndex;
       }
 
-      this.swap(index, smallerIdx);
-      index = smallerIdx;
-      leftIdx = index * 2 + 1;
-      rightIdx = index * 2 + 2;
+      // 오른쪽 자식 노드와 비교
+      if (rightChildIndex < this.heap.length) {
+        if (
+          (swapIdx === null &&
+            this.heap[rightChildIndex].priority < this.heap[index].priority) ||
+          (swapIdx !== null &&
+            this.heap[rightChildIndex].priority <
+              this.heap[leftChildIndex].priority)
+        ) {
+          swapIdx = rightChildIndex;
+        }
+      }
+
+      if (swapIdx === null) break;
+
+      this.swap(index, swapIdx);
+      index = swapIdx;
     }
-  }
+  };
 
-  isEmpty() {
-    return this.heap.length === 0;
-  }
+  enqueue = (value, priority) => {
+    const node = new Node(value, priority);
+    this.heap.push(node);
+    this.heapifyUp();
+  };
+
+  dequeue = () => {
+    if (this.heap.length === 0) return null;
+    const min = this.heap[0];
+    const end = this.heap.pop();
+
+    if (this.heap.length > 0) {
+      this.heap[0] = end;
+      this.heapifyDown();
+    }
+    return min;
+  };
 }
 
-for (let v of linkedInfo) {
-  let [a, b, c] = v;
+const [V, E] = input[0].split(" ").map(Number);
+const K = Number(input[1]);
 
-  graph[a].set(b, Math.min(c, graph[a].get(b) || Infinity));
+const map = new Array(V + 1);
+
+for (let i = 1; i <= V; i++) {
+  map[i] = [];
 }
+
+for (let i = 2; i < E + 2; i++) {
+  const [u, v, w] = input[i].split(" ").map(Number);
+  map[u].push([v, w]);
+}
+const INF = Number.MAX_SAFE_INTEGER;
+const distance = new Array(V + 1).fill(INF);
 
 dijkstra();
 
-let answer = '';
-
-for (let i = 1; i <= V; i++) {
-  if (distance[i] === Infinity) {
-    answer += 'INF';
-  } else {
-    answer += distance[i];
-  }
-
-  answer += '\n';
-}
-
-console.log(answer.trim());
-
 function dijkstra() {
-  let minHeap = new MinHeap();
-  minHeap.push([0, start]);
-  distance[start] = 0;
+  const pq = new PriorityQueue();
 
-  while (!minHeap.isEmpty()) {
-    let [dist, cur] = minHeap.pop();
+  pq.enqueue(K, 0);
+  distance[K] = 0;
 
-    if (distance[cur] < dist) continue;
-
-    for (let [next, cost] of graph[cur]) {
-      if (dist + cost < distance[next]) {
-        distance[next] = dist + cost;
-        minHeap.push([dist + cost, next]);
+  while (!pq.isEmpty()) {
+    const { value, priority } = pq.dequeue();
+    if (distance[value] < priority) continue; // 이미 처리된 정점
+    for (let v of map[value]) {
+      let cost = priority + v[1];
+      if (cost < distance[v[0]]) {
+        // 갱신
+        distance[v[0]] = cost;
+        pq.enqueue(v[0], cost);
       }
     }
   }
 }
+
+let ans = "";
+
+for (let i = 1; i <= V; i++) {
+  if (distance[i] === INF) ans += "INF";
+  else ans += distance[i];
+  ans += "\n";
+}
+
+console.log(ans);
