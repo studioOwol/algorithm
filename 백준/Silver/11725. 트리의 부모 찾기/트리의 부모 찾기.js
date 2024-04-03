@@ -17,7 +17,7 @@ input.forEach((v) => {
   graph[b].push(a);
 });
 
-dfs(1, 0);
+dfs(1);
 
 for (let i = 2; i <= N; i++) {
   answer += parent[i] + '\n';
@@ -25,13 +25,21 @@ for (let i = 2; i <= N; i++) {
 
 console.log(answer.trim());
 
-function dfs(node, parentNode) {
-  visited[node] = true;
-  parent[node] = parentNode;
+function dfs(startNode) {
+  const stack = [{ node: startNode, parentNode: 0 }];
 
-  for (let next of graph[node]) {
-    if (!visited[next]) {
-      dfs(next, node);
+  while (stack.length) {
+    const { node, parentNode } = stack.pop();
+
+    if (visited[node]) continue;
+    visited[node] = true;
+
+    parent[node] = parentNode;
+
+    for (let next of graph[node]) {
+      if (!visited[next]) {
+        stack.push({ node: next, parentNode: node });
+      }
     }
   }
 }
