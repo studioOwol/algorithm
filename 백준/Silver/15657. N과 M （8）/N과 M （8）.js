@@ -10,11 +10,11 @@ let nums = input[1].split(' ').map(Number);
 let answer = [];
 nums.sort((a, b) => a - b);
 
-getPermutations(0, []);
+makeSequence(0, []);
 
 console.log(answer.map((el) => el.join(' ')).join('\n'));
 
-function getPermutations(start, result) {
+function makeSequence(start, result) {
   if (result.length === M) {
     answer.push([...result]);
     return;
@@ -23,6 +23,6 @@ function getPermutations(start, result) {
   for (let i = start; i < N; i++) {
     let newResult = [...result];
     newResult.push(nums[i]);
-    getPermutations(i, newResult);
+    makeSequence(i, newResult);
   }
 }
