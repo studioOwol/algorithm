@@ -1,58 +1,57 @@
-let [t, ...input] = require('fs')
-  .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
-  .toString()
-  .trim()
-  .split('\n');
+const filePath = process.platform === "linux" ? "/dev/stdin" : "./input.txt";
+const input = require("fs").readFileSync(filePath).toString().trim().split("\n");
 
-let [N, M] = t.split(' ').map(Number);
-let board = input.map((el) => el.split('').map(Number));
-let visited = Array.from({ length: N }, () =>
-  Array.from({ length: M }, () => Array(2).fill(0))
-);
-let ds = [
-  [-1, 0],
-  [0, 1],
-  [1, 0],
-  [0, -1],
-];
+const [N, M] = input.shift().split(" ").map(Number);
+const map = input.map((x) => x.split("").map(Number));
 
-let result = bfs();
-console.log(result);
+// 벽을 부숴야 한다면 최대 1개 부숴도 된다 => 이때 최단 경로
 
-function bfs() {
-  let queue = [[0, 0, 0]];
-  visited[0][0][0] = 1;
-  let idx = 0;
+const dx = [-1, 1, 0, 0];
+const dy = [0, 0, -1, 1];
 
-  while (queue.length !== idx) {
-    let [r, c, wallCnt] = queue[idx];
+const bfs = (x, y) => {
+    const queue = [[x, y, 0]];
+    const visited = Array.from({ length: 2 }, () =>
+        Array.from({ length: N }, () => Array(M).fill(0))
+    );
 
-    if (r === N - 1 && c === M - 1) {
-      return visited[r][c][wallCnt];
-    }
+    // 0층은 벽을 부수지 않았을 때의 최단 거리를 저장
+    visited[0][x][y] = 1;
 
-    for (let d of ds) {
-      let nr = r + d[0];
-      let nc = c + d[1];
+    let idx = 0;
+    while (queue.length !== idx) {
+        const [x, y, breakCnt] = queue[idx]; // 현재 큐에서 하나 뽑기
 
-      if (!(0 <= nr && nr < N && 0 <= nc && nc < M)) {
-        continue;
-      }
-
-      if (board[nr][nc]) {
-        if (wallCnt === 0 && !visited[nr][nc][1]) {
-          visited[nr][nc][1] = visited[r][c][wallCnt] + 1;
-          queue.push([nr, nc, 1]);
+        if (x === N - 1 && y === M - 1) {
+            return visited[breakCnt][x][y];
         }
-      } else {
-        if (visited[nr][nc][wallCnt]) continue;
 
-        visited[nr][nc][wallCnt] = visited[r][c][wallCnt] + 1;
-        queue.push([nr, nc, wallCnt]);
-      }
+        for (let i = 0; i < 4; i++) {
+            const nx = x + dx[i];
+            const ny = y + dy[i];
+
+            if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+
+            // 다음 갈 곳이 벽이고 한 번도 안부순 상태라면
+            if (map[nx][ny]) {
+                if (!breakCnt && !visited[1][nx][ny]) {
+                    visited[1][nx][ny] = visited[0][x][y] + 1;
+                    queue.push([nx, ny, 1]);
+                }
+            } else {
+                if (visited[breakCnt][nx][ny]) continue; // 방문했다면 이미 최단경로임
+
+                visited[breakCnt][nx][ny] = visited[breakCnt][x][y] + 1;
+                queue.push([nx, ny, breakCnt]);
+            }
+        }
+
+        idx++;
     }
-    idx++;
-  }
 
-  return -1;
-}
+    return -1;
+};
+
+const res = bfs(0, 0);
+
+console.log(res);
