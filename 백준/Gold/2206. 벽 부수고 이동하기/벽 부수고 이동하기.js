@@ -1,57 +1,58 @@
-const filePath = process.platform === "linux" ? "/dev/stdin" : "./input.txt";
-const input = require("fs").readFileSync(filePath).toString().trim().split("\n");
+let [t, ...input] = require('fs')
+  .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
+  .toString()
+  .trim()
+  .split('\n');
 
-const [N, M] = input.shift().split(" ").map(Number);
-const map = input.map((x) => x.split("").map(Number));
+let [N, M] = t.split(' ').map(Number);
+let board = input.map((el) => el.split('').map(Number));
+let visited = Array.from({ length: 2 }, () =>
+  Array.from({ length: N }, () => Array(M).fill(0))
+);
+let ds = [
+  [-1, 0],
+  [0, 1],
+  [1, 0],
+  [0, -1],
+];
 
-// 벽을 부숴야 한다면 최대 1개 부숴도 된다 => 이때 최단 경로
+let result = bfs();
+console.log(result);
 
-const dx = [-1, 1, 0, 0];
-const dy = [0, 0, -1, 1];
+function bfs() {
+  let queue = [[0, 0, 0]];
+  visited[0][0][0] = 1;
+  let idx = 0;
 
-const bfs = (x, y) => {
-    const queue = [[x, y, 0]];
-    const visited = Array.from({ length: 2 }, () =>
-        Array.from({ length: N }, () => Array(M).fill(0))
-    );
+  while (queue.length !== idx) {
+    let [r, c, wallCnt] = queue[idx];
 
-    // 0층은 벽을 부수지 않았을 때의 최단 거리를 저장
-    visited[0][x][y] = 1;
-
-    let idx = 0;
-    while (queue.length !== idx) {
-        const [x, y, breakCnt] = queue[idx]; // 현재 큐에서 하나 뽑기
-
-        if (x === N - 1 && y === M - 1) {
-            return visited[breakCnt][x][y];
-        }
-
-        for (let i = 0; i < 4; i++) {
-            const nx = x + dx[i];
-            const ny = y + dy[i];
-
-            if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
-
-            // 다음 갈 곳이 벽이고 한 번도 안부순 상태라면
-            if (map[nx][ny]) {
-                if (!breakCnt && !visited[1][nx][ny]) {
-                    visited[1][nx][ny] = visited[0][x][y] + 1;
-                    queue.push([nx, ny, 1]);
-                }
-            } else {
-                if (visited[breakCnt][nx][ny]) continue; // 방문했다면 이미 최단경로임
-
-                visited[breakCnt][nx][ny] = visited[breakCnt][x][y] + 1;
-                queue.push([nx, ny, breakCnt]);
-            }
-        }
-
-        idx++;
+    if (r === N - 1 && c === M - 1) {
+      return visited[wallCnt][r][c];
     }
 
-    return -1;
-};
+    for (let d of ds) {
+      let nr = r + d[0];
+      let nc = c + d[1];
 
-const res = bfs(0, 0);
+      if (!(0 <= nr && nr < N && 0 <= nc && nc < M)) {
+        continue;
+      }
 
-console.log(res);
+      if (board[nr][nc]) {
+        if (wallCnt === 0 && !visited[1][nr][nc]) {
+          visited[1][nr][nc] = visited[wallCnt][r][c] + 1;
+          queue.push([nr, nc, 1]);
+        }
+      } else {
+        if (visited[wallCnt][nr][nc]) continue;
+
+        visited[wallCnt][nr][nc] = visited[wallCnt][r][c] + 1;
+        queue.push([nr, nc, wallCnt]);
+      }
+    }
+    idx++;
+  }
+
+  return -1;
+}
