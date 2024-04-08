@@ -1,43 +1,54 @@
-let fs = require("fs");
-let input = fs.readFileSync("/dev/stdin").toString().trim().split("\n");
+let [t, ...input] = require('fs')
+  .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
+  .toString()
+  .trim()
+  .split('\n');
 
-let [N, M] = input[0].split(" ").map(Number);
-input = input.slice(1).map((v) => v.split("").map(Number));
-const ch = Array.from(new Array(N), () => new Array());
-const dx = [1, 0, -1, 0];
-const dy = [0, 1, 0, -1];
-const queue = [];
+let [N, M] = t.split(' ').map(Number);
+let board = input.map((el) => el.split('').map(Number));
+let visited = Array.from({ length: N }, () =>
+  Array.from({ length: M }, () => Array(2).fill(0))
+);
+let ds = [
+  [-1, 0],
+  [0, 1],
+  [1, 0],
+  [0, -1],
+];
 
-for (let i = 0; i < N; i++) {
-  for (let j = 0; j < M; j++) {
-    ch[i][j] = new Array(2).fill(0);
-  }
-}
+let result = bfs();
+console.log(result);
 
-queue.push([0, 0, 0]);
-ch[0][0][0] = 1;
-
-function BFS() {
+function bfs() {
+  let queue = [[0, 0, 0]];
+  visited[0][0][0] = 1;
   let idx = 0;
 
-  while (idx !== queue.length) {
-    const [y, x, isBreak] = queue[idx];
+  while (queue.length !== idx) {
+    let [r, c, wallCnt] = queue[idx];
 
-    if (x === M - 1 && y === N - 1) {
-      return ch[y][x][isBreak];
+    if (r === N - 1 && c === M - 1) {
+      return visited[r][c][wallCnt];
     }
 
-    for (let i = 0; i < dx.length; i++) {
-      const [nx, ny] = [x + dx[i], y + dy[i]];
+    for (let d of ds) {
+      let nr = r + d[0];
+      let nc = c + d[1];
 
-      if (nx >= 0 && nx < M && ny >= 0 && ny < N) {
-        if (input[ny][nx] === 0 && ch[ny][nx][isBreak] === 0) {
-          ch[ny][nx][isBreak] = ch[y][x][isBreak] + 1;
-          queue.push([ny, nx, isBreak]);
-        } else if (input[ny][nx] === 1 && isBreak === 0) {
-          ch[ny][nx][isBreak + 1] = ch[y][x][isBreak] + 1;
-          queue.push([ny, nx, isBreak + 1]);
+      if (!(0 <= nr && nr < N && 0 <= nc && nc < M)) {
+        continue;
+      }
+
+      if (board[nr][nc]) {
+        if (wallCnt === 0 && !visited[nr][nc][1]) {
+          visited[nr][nc][1] = visited[r][c][wallCnt] + 1;
+          queue.push([nr, nc, 1]);
         }
+      } else {
+        if (visited[nr][nc][wallCnt]) continue;
+
+        visited[nr][nc][wallCnt] = visited[r][c][wallCnt] + 1;
+        queue.push([nr, nc, wallCnt]);
       }
     }
     idx++;
@@ -45,5 +56,3 @@ function BFS() {
 
   return -1;
 }
-
-console.log(BFS());
