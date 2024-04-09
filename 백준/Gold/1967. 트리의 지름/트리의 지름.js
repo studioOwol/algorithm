@@ -6,8 +6,8 @@ let [t, ...input] = require('fs')
 
 let N = +t;
 let graph = Array.from({ length: N + 1 }, () => []);
-let dist = Array(N + 1).fill(0);
 let visited = Array(N + 1).fill(false);
+let result = 0;
 let maxNode = 0;
 
 input.forEach((v) => {
@@ -17,24 +17,22 @@ input.forEach((v) => {
   graph[b].push([a, cost]);
 });
 
-dfs(1);
-maxNode = dist.indexOf(Math.max(...dist));
-visited = Array(N + 1).fill(false);
-dist = Array(N + 1).fill(0);
-dfs(maxNode);
+dfs(1, 0, 0);
+visited.fill(false);
+dfs(maxNode, 0, 0);
+console.log(result);
 
-console.log(Math.max(...dist));
-
-function dfs(node) {
+function dfs(node, parent, dist) {
   visited[node] = true;
 
-  for (let i = 0; i < graph[node].length; i++) {
-    let [next, value] = graph[node][i];
-    let cost = dist[node] + value;
+  if (dist > result) {
+    result = dist;
+    maxNode = node;
+  }
 
-    if (!visited[next] && cost > dist[next]) {
-      dist[next] = cost;
-      dfs(next);
+  for (let [next, value] of graph[node]) {
+    if (!visited[next] && next !== parent) {
+      dfs(next, node, dist + value);
     }
   }
 }
