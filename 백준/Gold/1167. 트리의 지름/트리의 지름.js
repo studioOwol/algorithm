@@ -10,10 +10,8 @@ let result = 0;
 let maxNode = 0;
 
 input.forEach((v) => {
-  let [start, ...linkInfo] = v
-    .slice(0, v.length - 3)
-    .split(' ')
-    .map(Number);
+  let [start, ...linkInfo] = v.split(' ').map(Number);
+  linkInfo.pop();
 
   for (let i = 0; i < linkInfo.length; i += 2) {
     graph[start].push([linkInfo[i], linkInfo[i + 1]]);
