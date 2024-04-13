@@ -20,12 +20,12 @@ input.forEach((v) => {
   }
 });
 
-dfs(1, 0, 0);
+dfs(1, 0);
 visited.fill(0);
-dfs(maxNode, 0, 0);
+dfs(maxNode, 0);
 console.log(result);
 
-function dfs(node, parent, dist) {
+function dfs(node, dist) {
   visited[node] = true;
 
   if (dist > result) {
@@ -35,8 +35,8 @@ function dfs(node, parent, dist) {
 
   for (let i = 0; i < graph[node].length - 1; i += 2) {
     let [next, cost] = [graph[node][i], graph[node][i + 1]];
-    if (next !== parent && !visited[next]) {
-      dfs(next, node, dist + cost);
+    if (!visited[next]) {
+      dfs(next, dist + cost);
     }
   }
 }
