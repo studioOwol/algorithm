@@ -8,9 +8,9 @@ let [t, ...cases] = require('fs')
 let [tc] = t;
 let index = 0;
 let graph;
-let INF = 1e9;
+let INF = 2 ** 50;
 
-for (let k = 0; k < t; k++) {
+for (let k = 0; k < tc; k++) {
   let [N, M, W] = cases[index++];
 
   graph = Array.from({ length: N + 1 }, () => []);
@@ -23,6 +23,7 @@ for (let k = 0; k < t; k++) {
     graph[end].push([start, cost]);
   }
 
+  // 웜홀 정보 저장
   for (let j = 0; j < W; j++) {
     let [start, end, cost] = cases[index++];
 
