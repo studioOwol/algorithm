@@ -1,49 +1,15 @@
-let [t, ...input] = require('fs')
-  .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
-  .toString()
-  .trim()
-  .split('\n');
-
-let [N, M] = t.split(' ').map(Number);
-let graph = Array.from({ length: N + 1 }, () => []);
-let INF = Infinity;
-let dist = Array(N + 1).fill(INF);
-
-input.forEach((v) => {
-  let [start, end, cost] = v.split(' ').map(Number);
-
-  graph[start].push([end, cost]);
-});
-
-if (bellmanFord()) {
-  console.log(-1);
-  return;
-}
-
-for (let i = 2; i <= N; i++) {
-  if (dist[i] === INF) {
-    console.log(-1);
-  } else {
-    console.log(dist[i]);
-  }
-}
+const [[n, m], ...edges] = (require("fs").readFileSync("/dev/stdin") + "").trim().split("\n").map((v) => v.split(" ").map(Number));
 
 function bellmanFord() {
-  dist[1] = 0;
-
-  for (let i = 0; i < N; i++) {
-    for (let j = 1; j <= N; j++) {
-      for (let [next, cost] of graph[j]) {
-        if (dist[next] > dist[j] + cost) {
-          dist[next] = dist[j] + cost;
-
-          if (i === N - 1) {
-            return true;
-          }
-        }
-      }
+  const minEta = Array(n + 1).fill(Infinity);
+  minEta[1] = 0;
+  for (let i = 0; i < n; i++) {
+    for (const e of edges) {
+      if (minEta[e[1]] <= minEta[e[0]] + e[2]) continue;
+      if (i === n - 1) return [-1];
+      minEta[e[1]] = minEta[e[0]] + e[2];
     }
   }
-
-  return false;
+  return minEta.slice(2).map((v) => (v === Infinity ? -1 : v));
 }
+console.log(bellmanFord().join("\n"));
