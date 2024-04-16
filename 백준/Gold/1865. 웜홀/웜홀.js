@@ -18,15 +18,15 @@ for (let k = 0; k < tc; k++) {
   for (let i = 0; i < M; i++) {
     let [start, end, cost] = cases[index++].split(' ').map(Number);
 
-    graph[start].push([end, cost]);
-    graph[end].push([start, cost]);
+    graph[start].push({ to: end, cost: cost });
+    graph[end].push({ to: start, cost: cost });
   }
 
   // 웜홀 정보 저장
   for (let j = 0; j < W; j++) {
     let [start, end, cost] = cases[index++].split(' ').map(Number);
 
-    graph[start].push([end, -cost]);
+    graph[start].push({ to: end, cost: -cost });
   }
 
   console.log(bellmanFord(N, graph) ? 'YES' : 'NO');
@@ -40,9 +40,9 @@ function bellmanFord(N, graph) {
   for (let i = 0; i < N; i++) {
     // 각 노드를 순회
     for (let j = 1; j <= N; j++) {
-      for (let [next, cost] of graph[j]) {
-        if (dist[next] > dist[j] + cost) {
-          dist[next] = dist[j] + cost;
+      for (let { to, cost } of graph[j]) {
+        if (dist[to] > dist[j] + cost) {
+          dist[to] = dist[j] + cost;
 
           if (i === N - 1) {
             return true;
