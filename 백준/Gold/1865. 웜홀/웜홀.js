@@ -2,22 +2,21 @@ let [t, ...cases] = require('fs')
   .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
   .toString()
   .trim()
-  .split('\n')
-  .map((el) => el.split(' ').map(Number));
+  .split('\n');
 
 let [tc] = t;
 let index = 0;
 let graph;
-let INF = 2 ** 50;
+let INF = 1e9;
 
 for (let k = 0; k < tc; k++) {
-  let [N, M, W] = cases[index++];
+  let [N, M, W] = cases[index++].split(' ').map(Number);
 
   graph = Array.from({ length: N + 1 }, () => []);
 
   // 도로 정보 저장
   for (let i = 0; i < M; i++) {
-    let [start, end, cost] = cases[index++];
+    let [start, end, cost] = cases[index++].split(' ').map(Number);
 
     graph[start].push([end, cost]);
     graph[end].push([start, cost]);
@@ -25,7 +24,7 @@ for (let k = 0; k < tc; k++) {
 
   // 웜홀 정보 저장
   for (let j = 0; j < W; j++) {
-    let [start, end, cost] = cases[index++];
+    let [start, end, cost] = cases[index++].split(' ').map(Number);
 
     graph[start].push([end, -cost]);
   }
@@ -45,7 +44,6 @@ function bellmanFord(N, graph) {
         if (dist[next] > dist[j] + cost) {
           dist[next] = dist[j] + cost;
 
-          // N번째 순회에서 갱신되는 값이 있으면 음수 사이클 존재
           if (i === N - 1) {
             return true;
           }
