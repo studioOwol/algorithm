@@ -6,8 +6,8 @@ let [t, ...input] = require('fs')
 
 let [N, M] = t.split(' ').map(Number);
 let graph = Array.from({ length: N + 1 }, () => []);
-let INF = 1e9;
-let dist = Array(N + 1).fill(Infinity);
+let INF = Infinity;
+let dist = Array(N + 1).fill(INF);
 
 input.forEach((v) => {
   let [start, end, cost] = v.split(' ').map(Number);
@@ -21,7 +21,7 @@ if (bellmanFord()) {
 }
 
 for (let i = 2; i <= N; i++) {
-  if (dist[i] === Infinity) {
+  if (dist[i] === INF) {
     console.log(-1);
   } else {
     console.log(dist[i]);
