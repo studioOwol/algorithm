@@ -8,7 +8,8 @@ let [[N, M], ...edges] = require('fs')
 console.log(bellmanFord().join('\n'));
 
 function bellmanFord() {
-  let dist = Array(N + 1).fill(Infinity);
+  let INF = 1e300;
+  let dist = Array(N + 1).fill(INF);
   dist[1] = 0;
 
   for (let i = 0; i < N; i++) {
@@ -23,5 +24,5 @@ function bellmanFord() {
     }
   }
 
-  return dist.slice(2).map((v) => (v === Infinity ? -1 : v));
+  return dist.slice(2).map((v) => (v === INF ? -1 : v));
 }
