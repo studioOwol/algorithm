@@ -1,10 +1,8 @@
-const { copyFileSync } = require('fs');
-
-let x = +require('fs')
+let input = +require('fs')
   .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
-  .toString()
-  .trim();
+  .toString();
 
+let N = input.toString(2);
 let bitCount = 0;
 
 // while (x > 0) {
@@ -17,9 +15,15 @@ let bitCount = 0;
 //   x >>= 1;
 // }
 
-while (x > 0) {
-  x &= x - 1;
-  bitCount++;
+// while (x > 0) {
+//   x &= x - 1;
+//   bitCount++;
+// }
+
+for (let i = 0; i < N.length; i++) {
+  if (N[i] === '1') {
+    bitCount++;
+  }
 }
 
 console.log(bitCount);
