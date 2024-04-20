@@ -1,72 +1,78 @@
-const fs = require('fs');
-const input = fs.readFileSync("./dev/stdin").toString().trim().split('\n');
+let [[N, M], ...walls] = require('fs')
+  .readFileSync(process.platform === 'linux' ? '/dev/stdin' : './example.txt')
+  .toString()
+  .trim()
+  .split('\n')
+  .map((el) => el.split(' ').map(Number));
 
+let visited = Array.from({ length: M }, () => Array(N).fill(0));
+let ds = [
+  [0, -1],
+  [-1, 0],
+  [0, 1],
+  [1, 0],
+];
+let roomCnt = 0;
+let sizes = [0];
+let breakWallSize = 0;
 
-const solve = (input) => {
-  const dx = [0, -1, 0, 1];
-  const dy = [-1, 0, 1, 0];
+for (let r = 0; r < M; r++) {
+  for (let c = 0; c < N; c++) {
+    if (!visited[r][c]) {
+      roomCnt++;
+      let size = 1;
+      let queue = [[r, c]];
+      visited[r][c] = roomCnt;
 
-  const castle = input.map(v => v.split(' ').map(Number))
-  const [W, H] = castle.shift();
-  let visited = Array.from(Array(H), () => Array(W).fill(0));
-  let area = 0;
-  const sizes = [0];
-  let maxSize = 0;
-  for (let i = 0; i < H; i++) {
-    for (let j = 0; j < W; j++) {
-      if (!visited[i][j]) {
-        let size = 1;
-        area++;
-        const q = [];
-        q.push([i, j]);
-        visited[i][j] = area;
-        while (q.length > 0) {
-          const [x, y] = q.shift();
-          const wall = castle[x][y];
-          for (let k = 0; k < 4; k++) {
-            if (!(wall & (1 << k))) {
-              const nx = x + dx[k]
-              const ny = y + dy[k]
-              if (nx >= 0 && ny >= 0 && nx < H && ny < W && !visited[nx][ny]) {
-                q.push([nx, ny])
-                visited[nx][ny] = area;
-                size++;
-              }
-            }
+      while (queue.length) {
+        let [cr, cc] = queue.shift();
+
+        for (let i = 0; i < 4; i++) {
+          let nr = cr + ds[i][0];
+          let nc = cc + ds[i][1];
+
+          if (!(0 <= nr && nr < M && 0 <= nc && nc < N)) {
+            continue;
           }
-        }
-        sizes.push(size);
-      }
-    }
-  }
 
-  // console.log(visited.map(v => v.join(' ')).join('\n'));
-
-
-  for (let i = 0; i < H; i++) {
-    for (let j = 0; j < W; j++) {
-      const now = visited[i][j];
-      const wall = castle[i][j];
-      for (let k = 0; k < 4; k++) {
-        if (wall & (1 << k)) {
-          const ni = i + dx[k];
-          const nj = j + dy[k];
-          if (ni >= 0 && nj >= 0 && ni < H && nj < W && visited[ni][nj] != now) {
-            const next = visited[ni][nj]
-            let temp = sizes[now] + sizes[next];
-            if (maxSize < temp) {
-              maxSize = temp;
-            }
+          if (!visited[nr][nc] && !(walls[cr][cc] & (1 << i))) {
+            queue.push([nr, nc]);
+            visited[nr][nc] = roomCnt;
+            size++;
           }
         }
       }
+
+      sizes.push(size);
     }
   }
-  console.log(area);// 이성에 있는 방의 개수
-  console.log(Math.max(...sizes));
-  console.log(maxSize)
-
-
 }
 
-solve(input);
+for (let r = 0; r < M; r++) {
+  for (let c = 0; c < N; c++) {
+    let roomId = visited[r][c];
+    let wall = walls[r][c];
+
+    for (let k = 0; k < 4; k++) {
+      let nr = r + ds[k][0];
+      let nc = c + ds[k][1];
+
+      if (!(0 <= nr && nr < M && 0 <= nc && nc < N)) {
+        continue;
+      }
+
+      if (visited[nr][nc] !== roomId && wall & (1 << k)) {
+        let next = visited[nr][nc];
+        let temp = sizes[roomId] + sizes[next];
+
+        if (breakWallSize < temp) {
+          breakWallSize = temp;
+        }
+      }
+    }
+  }
+}
+
+console.log(roomCnt);
+console.log(Math.max(...sizes));
+console.log(breakWallSize);
