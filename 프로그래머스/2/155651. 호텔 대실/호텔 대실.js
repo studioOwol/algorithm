@@ -5,29 +5,29 @@ function solution(book_time) {
         let [endH, endM] = end.split(':').map(Number);
         
         return [startH * 60 + startM, endH * 60 + endM];
-    })
+    });
     
     book_time.sort((a, b) => a[0] - b[0]);
-    let room = [];
+    let rooms = [];
 
     for (let i = 0; i < book_time.length; i++) {
         let [start, end] = book_time[i]
         let endTime = end + 10;
         let idx = -1;
         
-        for (let j = 0; j < room.length; j++) {
-            if (room[j] <= start) {
+        for (let j = 0; j < rooms.length; j++) {
+            if (rooms[j] <= start) {
                 idx = j;
                 break;
             }
         }
         
         if (idx === -1) {
-            room.push(endTime);
+            rooms.push(endTime);
         } else {
-            room[idx] = endTime;
+            rooms[idx] = endTime;
         }
     }
     
-    return room.length;
+    return rooms.length;
 }
