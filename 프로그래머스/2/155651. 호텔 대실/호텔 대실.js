@@ -8,26 +8,22 @@ function solution(book_time) {
     });
     
     book_time.sort((a, b) => a[0] - b[0]);
-    let rooms = [];
+    let rooms = [book_time[0]];
 
-    for (let i = 0; i < book_time.length; i++) {
-        let [start, end] = book_time[i]
-        let endTime = end + 10;
-        let idx = -1;
-        
-        for (let j = 0; j < rooms.length; j++) {
-            if (rooms[j] <= start) {
-                idx = j;
+    for(i = 1; i < book_time.length; i++){
+        let flag = true;
+        for(j = 0; j < rooms.length; j++){
+            if(rooms[j][1]+10 <= book_time[i][0]){
+                rooms[j] = book_time[i];
+                flag = false;
                 break;
-            }
+            }            
         }
-        
-        if (idx === -1) {
-            rooms.push(endTime);
-        } else {
-            rooms[idx] = endTime;
+
+        if(flag){
+            rooms.push(book_time[i]);
         }
-    }
-    
+   }
+
     return rooms.length;
 }
