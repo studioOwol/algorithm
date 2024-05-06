@@ -1,40 +1,14 @@
 function solution(arrayA, arrayB) {
-    arrayA = [...new Set(arrayA)];
-    arrayB = [...new Set(arrayB)];
-    
-    let gcdA = arrayA[0];
-    let gcdB = arrayB[0];
-    
-    for (let i = 1; i < arrayA.length; i++) {
-        gcdA = getGCD(gcdA, arrayA[i]);
-    }
-    
-    for (let i = 1; i < arrayB.length; i++) {
-        gcdB = getGCD(gcdB, arrayB[i]);
-    }
-    
-    for (let i = 0; i < arrayB.length; i++) {
-        if (arrayB[i] % gcdA === 0) {
-            gcdA = 0;
-            break;
-        }
-    }
-    
-    for (let i = 0; i < arrayA.length; i++) {
-        if (arrayA[i] % gcdB === 0) {
-            gcdB = 0;
-            break;
-        }
-    }
-    
-    return Math.max(gcdA, gcdB);
+    const aResult = getAnswer(arrayA, arrayB)
+    const bResult = getAnswer(arrayB, arrayA)
+
+    return aResult > bResult ? aResult : bResult
 }
 
-function getGCD(a, b) {
-    if (b === 0) {
-        return a;
-    } else {
-        return getGCD(b, a % b);
+function getAnswer (A, B) {
+    A.sort((a, b) => a - b)
+    for (let i = A[0]; i > 1; i--) {
+        if (A.every(a => a % i === 0) && !B.some(b => b % i === 0)) return i
     }
+    return 0
 }
-
