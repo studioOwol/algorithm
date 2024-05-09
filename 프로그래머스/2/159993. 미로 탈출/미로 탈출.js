@@ -54,7 +54,7 @@ function solution(maps) {
     let first = bfs(start, lever);
     let second = bfs(lever, exit);
     
-    if (first > 0 && second > 0) {
+    if (0 < first && 0 < second) {
         return first + second;
     } else {
         return -1;
