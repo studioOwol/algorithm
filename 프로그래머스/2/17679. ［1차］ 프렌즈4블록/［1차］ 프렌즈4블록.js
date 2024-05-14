@@ -1,98 +1,43 @@
-let directions = [[0,1],[1,0],[1,1]];
-let count = 0;
-let visited;
-
 function solution(m, n, board) {
-    var answer = 0;
-    let splitBoard = board.map(el => el.split(''));
+    board = board.map(v => v.split(''));
     
-    recursiveSolve(m, n, splitBoard);
-    answer = count;
-    
-    return answer;
-}
-
-function recursiveSolve(m, n, board) {
-    visited = Array.from(new Array(m), () => new Array(n).fill(false));
-    let flag = false;
-    
-    for (let r = 0; r < m - 1; r++) {
-        for (let c = 0; c < n -1; c++) {
+    while (true) {
+        let removes = [];
+        
+        for (let i = 0; i < m - 1; i++) {
+            for (let j = 0; j < n - 1; j++) {
+                let pick = board[i][j];
             
-            if (board[r][c] === 0) {
-                continue;
-            }
-            
-            if(isCrush(r, c, board)) {
-                flag = true;
-            }
-        }
-    }
-    
-    if (flag) {
-        let crushBoard = getCrushBoard(m, n, board);
-        fallDown(m, n, crushBoard);
-        recursiveSolve(m, n, crushBoard);
-    }
-}
-
-function getCrushBoard(m, n, board) {
-    let crushBoard = Array.from(new Array(m), () => new Array(n));
-    for (let r = 0; r < m; r++) {
-        for (let c = 0; c < n; c++) {
-            if (visited[r][c]) {
-                count++;
-                crushBoard[r][c] = 0;
-            } else {
-                crushBoard[r][c] = board[r][c];
-            }
-        }
-    }
-    
-    return crushBoard;
-}
-
-function fallDown(m, n, crushBoard) {
-    for (let r = m - 2; r >= 0; r--) {
-        for (let c = 0; c < n; c++) {
-            let str = crushBoard[r][c];
-            if (str === 0) {
-                continue;
-            }
-            let tmpR = r;
-            while(true) {
-                if (tmpR < m-1 && crushBoard[tmpR + 1][c] == 0) {
-                    tmpR++;
-                } else {
-                    break;
+                if (pick && 
+                    pick === board[i][j + 1] &&
+                    pick === board[i + 1][j] &&
+                    pick === board[i + 1][j + 1]
+                ) {
+                    removes.push([i, j]);
                 }
             }
-            crushBoard[r][c] = 0;
-            crushBoard[tmpR][c] = str;
         }
-    }
-}
-
-function isCrush(r,c,board) {
-    let str = board[r][c];
-    let flag = true;
     
-    for (let direction of directions) {
-        let newR = r + direction[0];
-        let newC = c + direction[1];
-        if (board[newR][newC] !== str) {
-            flag = false;
-            break;
-        }
-    }
+        if (!removes.length) return board.flat().filter(v => !v).length;
     
-    if (flag) {
-        visited[r][c] = true;
-        for (let direction of directions) {
-            let newR = r + direction[0];
-            let newC = c + direction[1];
-            visited[newR][newC] = true;
+        // 지워질 블록을 0으로 바꾸기
+        removes.forEach(([r, c]) => {
+            board[r][c] = 0;
+            board[r + 1][c] = 0;
+            board[r][c + 1] = 0;
+            board[r + 1][c + 1] = 0;
+        });
+    
+        // 0인 블록을 지우고 위에서 블록 당겨오기
+        for (let r = m - 1; r >= 0; r--) {
+            for (let c = 0; c < n; c++) {
+                for (let i = r - 1; i >= 0; i--) {
+                    if (board[r][c]) break;
+                
+                    board[r][c] = board[i][c];
+                    board[i][c] = 0;
+                }
+            }
         }
     }
-    return flag;
 }
