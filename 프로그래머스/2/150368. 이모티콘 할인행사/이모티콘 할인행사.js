@@ -1,5 +1,5 @@
 let combi;
-let dc;
+let dc = [0.4, 0.3, 0.2, 0.1];
 let totalPrice;
 let emojis;
 let people;
@@ -9,8 +9,8 @@ function solution(users, emoticons) {
     emojis = emoticons;
     people = users;
     
-    users.sort((a, b) => a[0] - b[0]);
-    getDiscountLimit(users[0][0]);
+    // users.sort((a, b) => a[0] - b[0]);
+    // getDiscountLimit(users[0][0]);
     combi = Array(emojis.length);
 
     getCombinations(0);
