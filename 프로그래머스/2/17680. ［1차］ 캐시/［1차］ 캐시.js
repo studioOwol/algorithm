@@ -2,27 +2,36 @@ function solution(cacheSize, cities) {
     let cache = [];
     let time = 0;
     
+    if (!cacheSize) return cities.length * 5;
+    
     for (let city of cities) {
         city = city.toLowerCase();
         
-        let idx = cache.indexOf(city);
-        
-        if (idx !== -1) {
-            // Cache hit
-            cache.splice(idx, 1);
+        if (!cache.length) {
             cache.push(city);
-            time += 1;
-        } else {
-            // Cache miss
-            if (cacheSize === cache.length && cacheSize > 0) {
-                cache.shift();
-            }
-            
-            if (cacheSize > 0) {
-                cache.push(city);
-            }
-            
             time += 5;
+            continue;
+        }
+        
+        if (0 < cache.length && cache.length < cacheSize)  {
+            if (cache.includes(city)) {
+                cache.splice(cache.indexOf(city), 1);
+                time += 1;
+                cache.push(city);
+            } else {
+                cache.push(city);
+                time += 5;
+            }
+        } else {
+            if (cache.includes(city)) {
+                cache.splice(cache.indexOf(city), 1);
+                time += 1;
+                cache.push(city);
+            } else {
+                cache.shift();
+                cache.push(city);
+                time += 5;
+            }
         }
     }
     
