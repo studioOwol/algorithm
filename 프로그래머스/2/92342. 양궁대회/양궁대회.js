@@ -1,15 +1,13 @@
-let combi;
+let answer = [];
 let N;
 let infos;
-let answer;
+let combi;
 let rianArr;
-let visited;
 
 function solution(n, info) {
     N = n;
     infos = info;
-    combi = Array(N);
-    answer = [];
+    combi = Array(N)
     
     getCombination(0, 0);
     
@@ -17,13 +15,13 @@ function solution(n, info) {
         if (a[0] !== b[0]) {
             return b[0] - a[0];
         }
+        
         return b[1] - a[1];
     });
     
     if (answer[0][0] <= 0) {
         return [-1];
     }
-    
     
     return answer[0][2];
 }
@@ -34,13 +32,13 @@ function getResult() {
     let scoreA = 0;
     let maxIdx = -1;
     
-    for (let i of combi)  {
-        let count = infos[i] + 1;
+    for (let i of combi) {
+        let cnt = infos[i] + 1;
         
-        if (count <= tmpN) {
-            rianArr[i] = count;
-            tmpN -= count;
+        if (cnt <= tmpN) {
+            rianArr[i] = cnt;
             scoreR += (10 - i);
+            tmpN -= cnt;
             maxIdx = Math.max(maxIdx, i);
         }
     }
@@ -49,15 +47,15 @@ function getResult() {
         rianArr[10] = tmpN;
     }
     
+    
     for (let i = 0; i < 11; i++) {
-        if (rianArr[i] <= infos[i] && infos[i] > 0) {
+        if (0 < infos[i] && rianArr[i] <= infos[i]) {
             scoreA += (10 - i);
         }
     }
     
     return [scoreR - scoreA, maxIdx, rianArr.slice()];
 }
-
 
 function getCombination(start, depth) {
     if (depth === N) {
@@ -66,7 +64,7 @@ function getCombination(start, depth) {
         return;
     }
     
-    for (let i = start; i < infos.length; i++) {
+    for (let i = start; i < 11; i++) {
         combi[depth] = i;
         getCombination(i + 1, depth + 1);
     }
