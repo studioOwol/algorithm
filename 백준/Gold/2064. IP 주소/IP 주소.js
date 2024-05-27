@@ -5,31 +5,36 @@ let [t, ...cases] = require('fs')
   .split('\n');
 
 let ips = cases.map((ip) => ip.split('.').map(Number));
-let ip = [];
-let mask = [];
-let flag = true;
+let network = Array(4).fill(0);
+let mask = Array(4).fill(0);
+let isNetwork = true;
 
 for (let i = 0; i < 4; i++) {
-  let min = ips[0][i];
-  let max = ips[0][i];
+  let base = ips[0][i];
 
-  for (let j = 1; j < t; j++) {
-    min &= ips[j][i];
-    max |= ips[j][i];
+  // 각 옥텟(8비트)의 첫번째 자리부터 IP 주소들의 공통 비트 찾기
+  for (let j = 7; j >= 0; j--) {
+    let bit = 1 << j;
+
+    for (let k = 1; k < t; k++) {
+      // 공통 비트가 아니면
+      if ((base & bit) !== (ips[k][i] & bit)) {
+        isNetwork = false;
+        break;
+      }
+    }
+    // 네트워크 부분이 아니면 = 호스트 부분은 0
+    if (!isNetwork) {
+      break;
+    }
+
+    // 공통 비트인 부분을 1로 만들기
+    mask[i] |= bit;
   }
 
-  if (!flag) {
-    ip.push(0);
-    mask.push(0);
-  } else {
-    ip.push(min);
-    mask.push(255 - (max - min));
-  }
-
-  if (min !== max) {
-    flag = false;
-  }
+  // 네트워크 주소 = IP 주소와 서브넷 마스크 비트 AND 연산 수행
+  network[i] = base & mask[i];
 }
 
-console.log(ip.join('.'));
+console.log(network.join('.'));
 console.log(mask.join('.'));
