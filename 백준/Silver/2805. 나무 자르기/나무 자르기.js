@@ -10,11 +10,12 @@ let left = 0;
 let right = Math.max(...trees);
 let result = 0;
 
-while (left <= right) {
+while (left < right) {
   let mid = Math.floor((left + right) / 2);
   let sum = 0;
 
   for (let tree of trees) {
+    // 음수인 경우에는 더하지 않도록
     sum += Math.max(tree - mid, 0);
   }
 
@@ -22,7 +23,7 @@ while (left <= right) {
     result = mid;
     left = mid + 1;
   } else {
-    right = mid - 1;
+    right = mid;
   }
 }
 
