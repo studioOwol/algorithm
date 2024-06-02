@@ -6,7 +6,7 @@ let [t, ...inputs] = require('fs')
 
 let [k, n] = t.split(' ').map(Number);
 let lans = inputs.map(Number);
-let left = 0;
+let left = 1;
 let right = Math.max(...lans);
 let result = 0;
 
