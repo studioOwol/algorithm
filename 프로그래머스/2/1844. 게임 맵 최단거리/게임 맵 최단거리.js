@@ -1,35 +1,51 @@
+let R;
+let C;
+let visited;
+let ds = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+let answer = [];
+
 function solution(maps) {
-    let visited = Array.from({length: maps.length}, () => Array.from({length: maps[0].length}, () => false));
-    let directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-    let queue = [[0, 0, 1]];
+    R = maps.length;
+    C = maps[0].length;
     
-    visited[0][0] = true;
+    visited = Array.from({length: R}, () => Array(C).fill(false));
     
-    function bfs() {
-        while (queue.length) {
-            const [x, y, cnt] = queue.shift();
-            
-            if (x === maps[0].length - 1 && y === maps.length - 1) {
-                return cnt;
-            }
-            
-            for (let direction of directions) {
-                let nx = x + direction[0];
-                let ny = y + direction[1];
-                
-                if (!(0 <= nx && nx < maps[0].length && 0 <= ny && ny < maps.length)) {
-                    continue;
-                }
-                
-                if (maps[ny][nx] === 1 && !visited[ny][nx]) {
-                    visited[ny][nx] = true;
-                    queue.push([nx, ny, cnt + 1]);
-                }
+    for (let i = 0; i < R; i++) {
+        for (let j = 0; j < C; j++) {
+            if (!maps[i][j]) {
+                visited[i][j] = true;
             }
         }
-        
-        return -1;
     }
     
-    return bfs();
+    return bfs(maps);
+}
+
+function bfs(maps) {
+    let queue = [[0, 0, 1]];
+    visited[0][0] = true;
+    
+    while (queue.length) {
+        let [r, c, cnt] = queue.shift();
+        
+        if (r === R - 1 && c === C - 1) {
+            return cnt;
+        }
+        
+        for (let d of ds) {
+            let nr = r + d[0];
+            let nc = c + d[1];
+            
+            if (!(0 <= nr && nr < R && 0 <= nc && nc < C)) {
+                continue;
+            }
+
+            if (!visited[nr][nc]) {
+                visited[nr][nc] = true;
+                queue.push([nr, nc, cnt + 1]);
+            }
+        }
+    }
+    
+    return -1;
 }
