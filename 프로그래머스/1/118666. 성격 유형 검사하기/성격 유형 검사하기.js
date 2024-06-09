@@ -1,5 +1,5 @@
 function solution(survey, choices) {
-    let typeMap = {'T': 0, 'R': 0, 'C': 0, 'F': 0, 'M': 0, 'J': 0, 'A': 0, 'N': 0};
+    let typeMap = {'R': 0, 'T': 0, 'C': 0, 'F': 0, 'J': 0, 'M': 0, 'A': 0, 'N': 0};
     let result = [];
     
     for (let i = 0; i < survey.length; i++) {
@@ -33,13 +33,7 @@ function solution(survey, choices) {
         }
     }
     
-    let sorted = Object.keys(typeMap).sort((a, b) => {
-        if (typeMap[a] !== typeMap[b]) {
-            return typeMap[b] - typeMap[a];
-        }
-        
-        return a.localeCompare(b);
-    });
+    let sorted = Object.keys(typeMap).sort((a, b) => typeMap[b] - typeMap[a]);
     
     result.push(sorted.filter(v => v === 'R' || v === 'T')[0]);
     result.push(sorted.filter(v => v === 'C' || v === 'F') [0]);
