@@ -1,44 +1,17 @@
 function solution(survey, choices) {
-    let typeMap = {'R': 0, 'T': 0, 'C': 0, 'F': 0, 'J': 0, 'M': 0, 'A': 0, 'N': 0};
-    let result = [];
+    let scoreMap = {};
+    let types = ['RT', 'CF', 'JM', 'AN'];
     
-    for (let i = 0; i < survey.length; i++) {
-        let query = survey[i];
-        let choice = choices[i]
-        let [first, second] = query.split('');
+    // scoreMap 초기화
+    types.forEach((type) => {
+        type.split('').forEach((char) => scoreMap[char] = 0);
+    });
+    
+    choices.forEach((choice, idx) => {
+        let [no, yes] = survey[idx];
         
-        // 첫 번째 캐릭터
-        if (choice < 4) {
-            if (choice === 3) {
-                typeMap[first] += 1;
-            }
-            if (choice === 2) {
-                typeMap[first] += 2;
-            }
-            if (choice === 1) {
-                typeMap[first] += 3;
-            }
-        }
-        // 두 번째 캐릭터
-        if (choice > 4) {
-            if (choice === 5) {
-                typeMap[second] += 1;
-            }
-            if (choice === 6) {
-                typeMap[second] += 2;
-            }
-            if (choice === 7) {
-                typeMap[second] += 3;
-            }
-        }
-    }
+        scoreMap[choice > 4 ? yes : no] += Math.abs(choice - 4);
+    });
     
-    let sorted = Object.keys(typeMap).sort((a, b) => typeMap[b] - typeMap[a]);
-    
-    result.push(sorted.filter(v => v === 'R' || v === 'T')[0]);
-    result.push(sorted.filter(v => v === 'C' || v === 'F') [0]);
-    result.push(sorted.filter(v => v === 'J' || v === 'M')[0]);
-    result.push(sorted.filter(v => v === 'A' || v === 'N')[0]);
-    
-    return result.join('');
+    return types.map(([a, b]) => scoreMap[b] > scoreMap[a] ? b : a).join('');
 }
