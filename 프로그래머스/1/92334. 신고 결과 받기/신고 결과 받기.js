@@ -15,13 +15,11 @@ function solution(id_list, report, k) {
         reportMap[b]++;
     }
     
-    let disabled = Object.keys(reportMap).filter(v => reportMap[v] >= k);
+    let banned = Object.keys(reportMap).filter(v => reportMap[v] >= k);
     
-    let answer = id_list.map(id => {
-        let cnt = userMap[id].filter(v => disabled.includes(v)).length;
+    return id_list.map(id => {
+        let cnt = userMap[id].filter(v => banned.includes(v)).length;
         
         return cnt;
     });
-    
-    return answer;
 }
