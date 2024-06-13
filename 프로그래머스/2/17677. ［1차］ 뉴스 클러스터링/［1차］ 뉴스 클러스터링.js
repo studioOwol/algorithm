@@ -1,41 +1,27 @@
 function solution(str1, str2) {
-     const bigrams1 = getBigrams(str1);
-    const bigrams2 = getBigrams(str2);
-
-    const map1 = new Map();
-    bigrams1.forEach(bigram => map1.set(bigram, (map1.get(bigram) || 0) + 1));
-
-    const map2 = new Map();
-    bigrams2.forEach(bigram => map2.set(bigram, (map2.get(bigram) || 0) + 1));
-
-    let intersectionSize = 0;
-    for (const [bigram, count] of map1.entries()) {
-        if (map2.has(bigram)) {
-            intersectionSize += Math.min(count, map2.get(bigram));
+    const getMultiSet = (str) => {
+        const set = new Map();
+        for (let i = 1; i < str.length; i++) {
+            const word = str.slice(i - 1, i + 1).toLowerCase();
+            if (!word.match(/^[a-z]{2}$/)) continue;
+            set.set(word, (set.get(word) || 0) + 1);
         }
+        return set;
+    };
+
+    const set1 = getMultiSet(str1);
+    const set2 = getMultiSet(str2);
+
+    const intersection = new Map();
+    const union = new Map(set1);
+    for (const [word, count] of set2) {
+        const minCount = Math.min(count, set1.get(word) || 0);
+        if (minCount > 0) intersection.set(word, minCount);
+        union.set(word, Math.max(count, union.get(word) || 0));
     }
 
-    let unionSize = 0;
-    for (const [bigram, count] of map1.entries()) {
-        unionSize += count;
-    }
-    for (const [bigram, count] of map2.entries()) {
-        unionSize += count;
-    }
-    unionSize -= intersectionSize;
+    const intersectionSize = [...intersection.values()].reduce((a, b) => a + b, 0);
+    const unionSize = [...union.values()].reduce((a, b) => a + b, 0);
 
-    const similarity = unionSize === 0 ? 1 : intersectionSize / unionSize;
-    return Math.floor(similarity * 65536);
-}
-
-function getBigrams(str) {
-    const bigrams = [];
-    const lowerStr = str.toLowerCase();
-    for (let i = 0; i < lowerStr.length - 1; i++) {
-        const bigram = lowerStr.slice(i, i + 2);
-        if (/^[a-z]{2}$/.test(bigram)) { 
-            bigrams.push(bigram);
-        }
-    }
-    return bigrams;
+    return unionSize === 0 ? 65536 : Math.floor(intersectionSize / unionSize * 65536);
 }
