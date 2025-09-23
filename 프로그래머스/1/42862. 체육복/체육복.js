@@ -1,17 +1,17 @@
 function solution(n, lost, reserve) {
-    let answer = [];
+    let saved = [];
     
     const newLost = lost.filter(num => !reserve.includes(num)).sort((a, b) => a - b);
     const newReserve = reserve.filter(num => !lost.includes(num)).sort((a, b) => a - b);
     
     newLost.forEach(lostNum => {
-        newReserve.forEach((reserveNum, idx) => {
-            if (Math.abs(lostNum - reserveNum) === 1) {
-                answer.push(lostNum);
-                newReserve.splice(idx, 1);
-            }
-        });
+        const foundIdx = newReserve.findIndex(reserveNum => Math.abs(lostNum - reserveNum) === 1);
+        
+        if (foundIdx !== -1) {
+            saved.push(lostNum);
+            newReserve.splice(foundIdx, 1);
+        }
     });
     
-    return n - newLost.length + answer.length;
+    return n - newLost.length + saved.length;
 }
