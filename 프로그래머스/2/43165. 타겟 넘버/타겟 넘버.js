@@ -1,18 +1,19 @@
 function solution(numbers, target) {
-    let result = 0;
+    let answer = 0;
     
-    const dfs = (cnt, acc) => {
-        if (cnt < numbers.length) {
-            dfs(cnt + 1, acc + numbers[cnt]);
-            dfs(cnt + 1, acc - numbers[cnt]);
-        } else {
+    function dfs(index, acc) {
+        if (index === numbers.length) {
             if (acc === target) {
-                result++;
+                answer++;
             }
+            return;
         }
+        
+        dfs(index + 1, acc + numbers[index]);
+        dfs(index + 1, acc - numbers[index]);
     }
     
     dfs(0, 0);
     
-    return result;
+    return answer;
 }
