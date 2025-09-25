@@ -16,7 +16,7 @@ if (requestTotal <= totalBudget) {
   return;
 }
 
-let left = 0;
+let left = 1;
 let right = maxRequest;
 let answer = 0;
 
