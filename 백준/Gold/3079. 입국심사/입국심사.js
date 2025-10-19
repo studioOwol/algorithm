@@ -7,13 +7,11 @@ let [info, ...inputs] = require('fs')
 const [N, M] = info.split(' ').map(Number);
 const times = inputs.map(Number);
 
-times.sort((a, b) => a - b);
-
-let left = BigInt(times[0]);
-let right = BigInt(times[N - 1]) * BigInt(M);
+let left = BigInt(Math.min(...times));
+let right = BigInt(Math.max(...times)) * BigInt(M);
 let result = right;
 
-while (left <= right) {
+while (left < right) {
   let mid = (left + right) / 2n;
   let count = 0n;
 
@@ -25,7 +23,7 @@ while (left <= right) {
 
   if (count >= BigInt(M)) {
     result = mid;
-    right = mid - 1n;
+    right = mid;
   } else {
     left = mid + 1n;
   }
